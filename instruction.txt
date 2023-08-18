@@ -1,0 +1,125 @@
+registers
+
+address:	a, b
+math:		x, y
+result:		r, s			// read only
+param:		m, n
+literal:	l
+branch:		z
+pc:			p
+generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
+
+32 instructions with 4-bit operand
+
+87654
+00 // register set & move
+--000 litl	{4'b val}				// load 4'b in lower nibble of l
+--001 lith	{4'b val}				// load 4'b in upper nibble of l
+--010 movc	{4'b reg}				// copy contents of reg to c
+--011 movd	{4'b reg}				// ↓ note: movc c: c = 8'b00000000
+--100 movm	{4'b reg}				// ↓
+--101 movn	{4'b reg}				// ↓
+--110 movx	{4'b reg}				// ↓
+--111 movy	{4'b reg}				// ↓
+
+01
+--000 mova	{4'b reg}				// ↓
+--001 movb	{4'b reg}				// ↓
+--010 movi	{4'b reg}				// ↓
+--011 movj	{4'b reg}				// ↓
+--100 movk	{4'b reg}				// ↓
+--101 movl	{4'b reg}				// ↓
+--110 movz	{4'b reg}				// ↓
+--111 movp	{4'b reg}				// set pc to value in reg 
+
+10 // data & branch
+--000 load	{0:a,1:b}	{3'b reg}	// read address a/b into reg (exclude r,s)
+--001 stor	{0:a,1:b}	{3'b reg}	// write reg into address a/b
+--010 incr	{4'b reg}				// increment register (exclude r,s)
+--011 decr	{4'b reg}				// decrement register (exclude r,s)
+--100 jizr	{0:r,1:s}	{3'b val}	// add (3'b)*2 to pc if r/s is zero (pronounced jizz-er)
+--101 jnzr	{0:r,1:s}	{3'b val}	// add (3'b)*2 to pc if r/s not zero
+--110 bizr	{4'b reg}				// branch to z if reg == 0
+--111 bnzr	{4'b reg}				// branch to z if reg != 0
+h
+11 // math & logic
+--000 
+--001 seth	{4'b val}				// set {n,m} at 4'b to 1
+--010 mthr	{4'b opp}				// do opp and store result in r
+--011 mths	{4'b opp}				// do opp and store result in s
+--100 lslc	{0:m,1:n}	{3'b val}	// 
+--101 lsrc	{0:m,1:n}	{3'b val}	//
+--110 flip	{4'b reg}				// flip bit across {n,m} by val reg[3:0]
+--111 func	{4'b fun}				// perform custom function
+
+
+fun function parameters
+	00 00	lng jump 0				// set p[9:0] = {2'b00, z}
+	00 01	lng jump 1				// set p[9:0] = {2'b01, z}
+	00 10	lng jump 2				// set p[9:0] = {2'b10, z}
+	00 11	lng jump 3				// set p[9:0] = {2'b11, z}
+	01 00	mem bank 0				// set p[9:8] = 2'b00
+	01 01	mem bank 1				// set p[9:8] = 2'b01
+	01 10	mem bank 2				// set p[9:8] = 2'b10
+	01 11	mem bank 3				// set p[9:8] = 2'b11
+
+	10 00	set0					// set n[7:6] = 2'b00 (0 errors)
+	10 01	set1					// set n[7:6] = 2'b01 (1 errors)
+	10 10	set2					// set n[7:6] = 2'b10 (2 errors)
+	10 11	set3					// set n[7:6] = 2'b11
+	11 00	strl					// start_address[7:0] = l[7:0]
+	11 01	strh					// start_address[9:8] = l[1:0]
+	11 10	ndne					// done flag = 0
+	11 11	done					// done flag = 1
+
+reg Register Values
+	3-bit accessible {r,s,c,d,m,n,x,y}
+	0000	r	4'h0
+	0001	s	4'h1
+	0010	c	4'h2
+	0011	d	4'h3
+	0100	m	4'h4
+	0101	n	4'h5
+	0110	x	4'h6
+	0111	y	4'h7
+
+	4-bit accessible
+	1000	a	4'h8
+	1001	b	4'h9
+	1010	i	4'ha
+	1011	j	4'hb
+	1100	k	4'hc
+	1101	l	4'hd
+	1110	z	4'he
+	1111	p	4'hf
+
+opp Math Operations
+	0000	amp		x&y
+	0001	lor		x|y
+	0010	flp		~x
+	0011	eor		x^y
+	0100	rsc		{y[0],x[7:1]}		// right shift carry
+	0101	lsc		{x[6:0,]y[7]}		// left shift carry
+	0110	rol		rotate x by y[2:0]
+	0111	
+
+	1000	add		x+y
+	1001	sub		x-y
+	1010	eql8	x == y
+	1011	eql5	x[7:4] == m[7:4]
+	1100	revx	x[0:7]
+	1101	revy	y[0:7]
+	1110	parx	^x
+	1111	pary	^y
+
+
+Hardware Encode/Decode // not implemented
+	
+	1000	prc0	^(b11:1,p8,p4,p2,p1) 
+	1001	prc1	^(b11,b9,b7,b5,b4,b2,b1) 
+	1010	prc2	^(b11,b10,b7,b6,b4,b3,b1)
+	1011	prc4	^(b11:b8,b4,b3,b2)
+	1100	prc8	^(b11:b5) 
+	1101	prcA	{000,p8,p4,p2,p1,p0}
+	1110	prgl	{b04,b03,b02,p04,b01,p02,p01,p00}
+	1111	prgh	{b11,b10,b09,b08,b07,b06,b05,p08}
