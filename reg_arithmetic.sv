@@ -1,7 +1,7 @@
 module reg_arithmetic (
-	input [7:0] x,
+	input [7:0] x, r, s,
 	input [3:0] v,
-	input incr, decr, jmpf, jmpb,
+	input incr, decr, jizr, jnzr,
 
 	output [7:0] res);
 logic add, sub;
