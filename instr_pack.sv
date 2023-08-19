@@ -15,7 +15,7 @@ package instr_pack;
 	} register;
 
 	typedef enum logic[3:0] {
-		amp, lor, flp, eor, rsc, lsc, rol, zzz,
+		amp, lor, flp, eor, rsc, lsc, rol, ror,
 		add, sub, eql8,eql5,revx,revy,parx,pary
 	} math;
 

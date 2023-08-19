@@ -74,24 +74,24 @@ fun function parameters
 
 reg Register Values
 	3-bit accessible {r,s,c,d,m,n,x,y}
-	0000	r	4'h0
-	0001	s	4'h1
+	0000	r	4'h0				// result_0
+	0001	s	4'h1				// result_1
 	0010	c	4'h2
 	0011	d	4'h3
-	0100	m	4'h4
-	0101	n	4'h5
-	0110	x	4'h6
-	0111	y	4'h7
+	0100	m	4'h4				// bit_edit_0
+	0101	n	4'h5				// bit_edit_1
+	0110	x	4'h6				// operand_0
+	0111	y	4'h7				// operand_1
 
 	4-bit accessible
-	1000	a	4'h8
-	1001	b	4'h9
+	1000	a	4'h8				// address_0
+	1001	b	4'h9				// address_1
 	1010	i	4'ha
 	1011	j	4'hb
 	1100	k	4'hc
-	1101	l	4'hd
-	1110	z	4'he
-	1111	p	4'hf
+	1101	l	4'hd				// literal
+	1110	z	4'he				// branch
+	1111	p	4'hf				// program_counter
 
 opp Math Operations
 	0000	amp		x&y
@@ -100,8 +100,8 @@ opp Math Operations
 	0011	eor		x^y
 	0100	rsc		{y[0],x[7:1]}		// right shift carry
 	0101	lsc		{x[6:0,]y[7]}		// left shift carry
-	0110	rol		rotate x by y[2:0]
-	0111	
+	0110	rol		rotate x left by y[2:0]
+	0111	ror		rotate x right by y[2:0]
 
 	1000	add		x+y
 	1001	sub		x-y
