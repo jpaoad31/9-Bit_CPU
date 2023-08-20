@@ -58,15 +58,15 @@ fun function parameters
 	00 01	lng jump 1				// set p[9:0] = {2'b01, z}
 	00 10	lng jump 2				// set p[9:0] = {2'b10, z}
 	00 11	lng jump 3				// set p[9:0] = {2'b11, z}
-	01 00	mem bank 0				// set p[9:8] = 2'b00
-	01 01	mem bank 1				// set p[9:8] = 2'b01
-	01 10	mem bank 2				// set p[9:8] = 2'b10
-	01 11	mem bank 3				// set p[9:8] = 2'b11
+	01 00	
+	01 01	
+	01 10	
+	01 11	
 
-	10 00	set0					// set n[7:6] = 2'b00 (0 errors)
-	10 01	set1					// set n[7:6] = 2'b01 (1 errors)
-	10 10	set2					// set n[7:6] = 2'b10 (2 errors)
-	10 11	set3					// set n[7:6] = 2'b11
+	10 00	
+	10 01	
+	10 10	
+	10 11	
 	11 00	strl					// start_address[7:0] = l[7:0]
 	11 01	strh					// start_address[9:8] = l[1:0]
 	11 10	ndne					// done flag = 0

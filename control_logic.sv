@@ -82,6 +82,10 @@ always_comb begin
 			if (!instr[4])			// flip
 				reg_op = flipEn;
 			else				// func
+				case (instr[3:0])
+
+
+				endcase
 				reg_op = funcEn;
 		end
 		endcase
