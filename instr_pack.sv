@@ -23,4 +23,13 @@ package instr_pack;
 		ljp0, ljp1, ljp2, ljp3, mem0, mem1, mem2, mem3,
 		set0, set1, set2, set3, strl, strh, ndne, done 
 	} functions;
+
+	typedef enum logic[3:0] {
+		non0,	non1,	non2,	non3,
+		lit_lo,	lit_hi,	mov,	non7,
+		loadEn,	storEn,	incr,	decr,
+		jizr,	jnzr,	bizr,	bnzr,
+		no16,	seth,	no18,	no19,
+		lslc,	lsrc,	flip,	func
+	} reg_OP;
 endpackage

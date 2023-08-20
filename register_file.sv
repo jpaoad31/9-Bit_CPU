@@ -1,8 +1,8 @@
 import instr_pack ::*;
 
 module register_file(
-	input clk, loadEn, storEn, mov, incr, decr, nibble, lit,
-	input [2:0] branch,
+	input clk,
+	input reg_OP reg_op,
 	input register reg_src, reg_dst, 
 	input [3:0] instr_o,
 	input [7:0] r, s, loadData,
@@ -13,6 +13,41 @@ logic [7:0] regs[16];
 logic [9:0] start_address;
 logic [3:0] src, dst;
 logic [7:0] n;
+
+logic loadEn, storEn, incr, decr, bizr, bnzr, jmpf, jmpb;
+
+always_latch begin
+	lit_lo	=0;
+	lit_hi	=0;
+	mov		=0;
+	loadEn	=0;
+	storEn	=0;
+	incr	=0;
+	decr	=0;
+	jizr	=0;
+	jnzr	=0;
+	bizr	=0;
+	bnzr	=0;
+
+	case (reg_op)
+		 1: 
+		 2:
+		 3:
+		 4: lit_lo	= 1;
+		 5: lit_hi	= 1;
+		 6: mov		= 1;
+
+		 8: loadEn	= 1;
+		 9: storEn	= 1;
+		10: incr	= 1;
+		11: decr	= 1;
+		12: jizr	= 1;
+		13: jnzr	= 1;
+		14: bizr	= 1;
+		15: bnzr	= 1;
+		
+	endcase
+end
 
 always_comb begin
 	$cast(src, reg_src);
@@ -33,23 +68,7 @@ assign n = regs[4'h5];
 assign x = regs[4'h6];
 assign y = regs[4'h7];
 
-logic bizr, bnzr, jmpf, jmpb;
-
 assign p[7:0] = regs[4'hf];
-
-always_comb begin
-	bizr = 0;
-	bnzr = 0;
-	jmpf = 0;
-	jmpb = 0;
-
-	case (branch)
-	4: jmpf = 1;
-	5: jmpb = 1;
-	6: bizr = 1;
-	7: bnzr = 1;
-	endcase
-end
 
 always_ff @(negedge clk) begin
 
