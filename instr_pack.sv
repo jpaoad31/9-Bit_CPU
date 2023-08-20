@@ -24,12 +24,12 @@ package instr_pack;
 		set0, set1, set2, set3, strl, strh, ndne, done 
 	} functions;
 
-	typedef enum logic[3:0] {
+	typedef enum logic[4:0] {
 		non0,	non1,	non2,	non3,
-		lit_lo,	lit_hi,	mov,	non7,
-		loadEn,	storEn,	incr,	decr,
-		jizr,	jnzr,	bizr,	bnzr,
-		no16,	seth,	no18,	no19,
-		lslc,	lsrc,	flip,	func
+		lit_lo,	lit_hi,	movEn,	non7,
+		loadEn,	storEn,	incrEn,	decrEn,
+		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
+		no16,	sethEn,	no18,	no19,
+		lslcEn,	lsrcEn,	flipEn,	funcEn
 	} reg_OP;
 endpackage

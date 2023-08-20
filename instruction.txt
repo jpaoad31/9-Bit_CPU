@@ -32,7 +32,7 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 --110 movz	{4'b reg}				// ↓
 --111 movp	{4'b reg}				// set pc to value in reg 
 
-10 // data & branch (reg_file)
+10 // data & branch (reg_OP)
 --000 load	{0:a,1:b}	{3'b reg}	// read address a/b into reg (exclude r,s)
 --001 stor	{0:a,1:b}	{3'b reg}	// write reg into address a/b
 --010 incr	{4'b reg}				// increment register (exclude r,s)

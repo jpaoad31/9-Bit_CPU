@@ -6,18 +6,17 @@ module top_level(
 
 // registers
 wire [9:0] p;									// program counter
-wire [7:0] a, b, x, y, m, r, s;				// specialty registers
+wire [7:0] a, b, x, y, m, r, s;					// specialty registers
 
 wire [8:0] instr;								// current instruction
 
 wire [7:0] storData, loadData;					// data to/from memory
 
-wire	lit, nibble, mov, incr, decr,			// control sig (register lit/mov)
-		loadEn, storEn, mem_sel,				// control sig (data memory)
-		alu_en, alu_rs;									// control sig (alu enable & output sel)
-wire [2:0] branch;								// control sig (branching)
+wire	mem_sel,								// control sig (data memory)
+		alu_en, alu_rs;							// control sig (alu enable & output sel)
 register reg_src, reg_dst;						// register selection (mov/load/stor)
 math math_op;									// math operation (alu)
+reg_OP reg_op;
 wire [3:0] instr_o;								// intruction operand (other)
 
 logic [7:0] address;
