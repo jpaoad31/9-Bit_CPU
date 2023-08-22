@@ -26,7 +26,7 @@ package instr_pack;
 	typedef enum logic[4:0] {
 		non0,	non1,	non2,	non3,
 		lit_lo,	lit_hi,	movEn,	non7,
-		loadEn,	storEn,	incrEn,	decrEn,
+		non8,	non9,	incrEn,	decrEn,
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
 		no16,	sethEn,	no18,	no19,
 		lslcEn,	lsrcEn,	flipEn,	funcEn,

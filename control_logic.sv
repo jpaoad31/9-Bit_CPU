@@ -4,19 +4,25 @@ module control_logic (
 	input [8:0] instr,
 	input start, clk,
 
-	output logic mem_sel, alu_rs, done, alu_en, movp,
+	output logic mem_sel, alu_rs, done, alu_en, movp, loadEn, storEn,
 	output register reg_src, reg_dst,
 	output math math_op,
 	output reg_OP reg_op,
 	output logic [3:0] instr_o);
 
 always_comb begin
+	math_op = amp;
+	reg_op = non0;
 	instr_o = instr[3:0];
-	mem_sel = 1'bz;
+	mem_sel = 0;
 	done = 0;
 	movp = 0;
-	$cast(reg_src, 4'bz);
-	$cast(reg_dst, 4'bz);
+	loadEn = 0;
+	storEn = 0;
+	alu_rs = 0;
+	alu_en = 0;
+	reg_src = r;
+	reg_dst = l;
 
 	case (instr[8:7])
 	2: begin						// data & branch
@@ -25,21 +31,23 @@ always_comb begin
 			mem_sel = instr[3];
 			if (!instr[4]) begin	// load
 				$cast(reg_dst, {1'b0,instr[2:0]});
-				reg_op = loadEn;
+				loadEn = 1;
 			end
 			else begin				// store
 				$cast(reg_src, {1'b0,instr[2:0]});
-				reg_op = storEn;
+				storEn = 1;
 			end
 		end
 		1: begin
 			if (!instr[4]) begin	// increment
 				reg_op = incrEn;
 				$cast(reg_dst, {instr[3:0]});
+				reg_src = reg_dst;
 			end
 			else begin				// decrement
 				reg_op = decrEn;
 				$cast(reg_dst, {instr[3:0]});
+				reg_src = reg_dst;
 			end
 		end
 		2: begin
@@ -70,7 +78,7 @@ always_comb begin
 
 		1: begin					// alu math
 			alu_rs = instr[4];
-			$cast(math_op, instr5[3:0]);
+			$cast(math_op, instr[3:0]);
 		end
 
 		2: begin

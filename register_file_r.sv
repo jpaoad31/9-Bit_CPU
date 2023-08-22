@@ -1,154 +1,214 @@
 import instr_pack ::*;
 
-module register_file(
-	input clk, movp, start, alu_en,
+module register_file_r(
+	input clk, movp, start, alu_en, loadEn, storEn,
 	input reg_OP reg_op,
 	input register reg_src, reg_dst, 
 	input [3:0] instr_o,
-	input [7:0] r, s, loadData,
-	output logic [7:0] a, b, x, y, m, storData=0,
-	output logic [9:0] p=0);
+	input [7:0] rr, rs, loadData,
+	output logic [7:0] ra, rb, rx, ry, rm, storData=0,
+	output logic [9:0] rp=0);
 
-logic [7:0] regs[16];
+logic [7:0] rc, rd, rn, ri, rj, rk, rl, rz;
 logic [9:0] start_address=0;
-logic [3:0] src=0, dst=0;
-logic [7:0] n, npc=0;
+logic [7:0] npc=0, temp;
 
-logic	lit_lo, lit_hi, mov, branch,
-		loadEn, storEn, incr, decr, bizr, bnzr, jizr, jnzr, seth,
-		lslc, lsrc, flip, func, ljp0, ljp1, ljp2, ljp3;
+logic [7:0] mx=0, res=0;
+reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
+reg_arithmetic pcALU(.x(rp[7:0]), .v(3'b0), .incr(1), .decr(0), .jizr(0), .jnzr(0), .res(npc));
 
-always_comb begin
-	$cast(src, reg_src);
-	$cast(dst, reg_dst);
-end
-
-// register operations
-always_comb begin
-	lit_lo	=0;
-	lit_hi	=0;
-	mov		=0;
-	loadEn	=0;
-	storEn	=0;
-	incr	=0;
-	decr	=0;
-	jizr	=0;
-	jnzr	=0;
-	bizr	=0;
-	bnzr	=0;
-	seth	=0;
-	lslc	=0;
-	lsrc	=0;
-	flip	=0;
-	func	=0;
-	ljp0	=0;
-	ljp1	=0;
-	ljp2	=0;
-	ljp3	=0;
-
-	case (reg_op)
-		 4: lit_lo	= 1;
-		 5: lit_hi	= 1;
-		 6: mov		= 1;
-
-		 8: loadEn	= 1;
-		 9: storEn	= 1;
-		10: incr	= 1;
-		11: decr	= 1;
-		12: jizr	= 1;
-		13: jnzr	= 1;
-		14: bizr	= 1;
-		15: bnzr	= 1;
-
-		17: seth	= 1;
-
-		20: lslc	= 1;
-		21: lsrc	= 1;
-		22: flip	= 1;
-		23: func	= 1;
-		24: ljp0	= 1;
-		25: ljp1	= 1;
-		26: ljp2	= 1;
-		27: ljp3	= 1;
-		default: lit_lo = 1;
-	endcase
-end
+logic	branch, othr, mov, incr, decr,
+		bizr, bnzr, jizr, jnzr,
+		lj0, lj1, lj2, lj3;
 
 logic eql;
 assign eql = (reg_src == reg_dst);
 
-logic [7:0] mx=0, res=0;
-logic [1:0] p_hi=0;
+// register operations
+always_comb begin
+	mov		=0;
+	incr	=0;
+	decr	=0;
 
-reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
-pc_increment pcALU(.x(regs[4'hf]), .v(3'b0), .incr(1), .decr(0), .jizr(0), .jnzr(0), .res(npc));
+	jizr	=0;
+	jnzr	=0;
+	bizr	=0;
+	bnzr	=0;
 
-assign a = regs[4'h8];
-assign b = regs[4'h9];
-assign m = regs[4'h4];
-assign n = regs[4'h5];
-assign x = regs[4'h6];
-assign y = regs[4'h7];
+	lj0	=0;
+	lj1	=0;
+	lj2	=0;
+	lj3	=0;
+
+	othr	=0;
+
+	case (reg_op)
+		movEn:	mov		= 1;
+		incrEn:	incr	= 1;
+		decrEn:	decr	= 1;
+
+		jizrEn: jizr	= 1;
+		jnzrEn: jnzr	= 1;
+		bizrEn: bizr	= 1;
+		bnzrEn: bnzr	= 1;
+
+		ljp0: lj0	= 1;
+		ljp1: lj1	= 1;
+		ljp2: lj2	= 1;
+		ljp3: lj3	= 1;
+
+		default: othr = 1;
+	endcase
+end
 
 // program counter update
-
-always_ff @(posedge clk)
+always_ff @(posedge clk) begin
 	if (!start) begin
-		p_hi = p[9:8];
 
 		if (branch) begin
-			if (jizr||jnzr)			regs[4'hf] = res;
-			else if (bizr||bnzr)	regs[4'hf] = regs[4'he];
+			if (jizr||jnzr)			rp[7:0] = res;
+			else if (bizr||bnzr)	rp[7:0] = rz;
 		end
+
 		else if (movp)				
-			if(!eql)				regs[4'hf] = regs[src];
-			else					regs[4'hf] = 8'b0;
+			case (reg_src)
+			r: rp[7:0] = rr;
+			s: rp[7:0] = rs;
+			c: rp[7:0] = rc;
+			d: rp[7:0] = rd;
+			m: rp[7:0] = rm;
+			n: rp[7:0] = rn;
+			x: rp[7:0] = rx;
+			y: rp[7:0] = ry;
+			a: rp[7:0] = ra;
+			b: rp[7:0] = rb;
+			i: rp[7:0] = ri;
+			j: rp[7:0] = rj;
+			k: rp[7:0] = rk;
+			l: rp[7:0] = rl;
+			z: rp[7:0] = rz;
+			default: rp = 10'b0;
+			endcase
+
 		else if (ljp0) begin
-									regs[4'hf] = regs[4'he];
-									p_hi = 2'b00;
+				rp = {2'b00, rz};
 		end
 		else if (ljp1) begin
-									regs[4'hf] = regs[4'he];
-									p_hi = 2'b01;
+				rp = {2'b01, rz};
 		end
 		else if (ljp2) begin
-									regs[4'hf] = regs[4'he];
-									p_hi = 2'b10;
+				rp = {2'b10, rz};
 		end
 		else if (ljp3) begin
-									regs[4'hf] = regs[4'he];
-									p_hi = 2'b11;
+				rp = {2'b11, rz};
 		end
-		else						regs[4'hf] = npc;
-
-		p = {p_hi, regs[4'hf]};
-	end else p = start_address;
-
-//register update
-always_ff @(negedge clk) begin
-	if (incr)
-		if (src != 4'hf)
-			regs[src] = res;
-	else if (decr)
-		if (src != 4'hf)
-			regs[src] = res;
+		else	rp[7:0] = npc;
+	end
+	else rp = start_address;
 end
+
+always_comb begin
+	if ((incr||decr||mov||bizr||bnzr)&&!movp) begin
+		case (reg_src)
+			r: temp = rr;
+			s: temp = rs;
+			c: temp = rc;
+			d: temp = rd;
+			m: temp = rm;
+			n: temp = rn;
+			x: temp = rx;
+			y: temp = ry;
+			a: temp = ra;
+			b: temp = rb;
+			i: temp = ri;
+			j: temp = rj;
+			k: temp = rk;
+			l: temp = rl;
+			z: temp = rz;
+			p: temp = rp[7:0];
+		endcase
+		if (eql && mov) temp = 8'b0;
+		mx = temp;
+	end else begin
+		temp = 8'b0;
+		mx = temp;
+	end
+end
+
 
 always_ff @(negedge clk) begin
 	branch = 0;
-	mx = 0;
+	case (reg_op)
+		lit_lo: rl[3:0] = instr_o;
+		lit_hi: rl[7:4] = instr_o;
+		movEn: begin
+			case (reg_dst)
+					c: rc = temp;
+					d: rd = temp;
+					m: rm = temp;
+					n: rn = temp;
+					x: rx = temp;
+					y: ry = temp;
+					a: ra = temp;
+					b: rb = temp;
+					i: ri = temp;
+					j: rj = temp;
+					k: rk = temp;
+					l: rl = temp;
+					z: rz = temp;
+			endcase
+			end
+		incrEn, decrEn: begin
+			case (reg_dst)
+					c: rc = res;
+					d: rd = res;
+					m: rm = res;
+					n: rn = res;
+					x: rx = res;
+					y: ry = res;
+					a: ra = res;
+					b: rb = res;
+					i: ri = res;
+					j: rj = res;
+					k: rk = res;
+					l: rl = res;
+					z: rz = res;
+			endcase
+			end
+		jizrEn: begin
+			if (!instr_o[3] && !rr) branch = 1;
+			else if (!rs) branch = 1;
+			end
+		jnzrEn: begin
+			if (!instr_o[3] && rr) branch = 1;
+			else if (rs) branch = 1;
+			end
+		bizrEn: begin
+			if (!temp) branch = 1;
+			end
+		bnzrEn: begin
+			if (temp) branch = 1;
+			end
+		sethEn: begin
+			case (instr_o[3:0])
+				4'b0: rm[0] = 1'b1;
+			endcase
+			end
+	endcase
+end
+endmodule
 
+/*
 	// check for pc brach conditions
-	if (jizr||jnzr||bizr||bnzr) begin
+	if (jizr||jnzr) begin
+		mx = rp[7:0];
 		if (jizr) begin
-			mx = regs[15];
 			if (!instr_o[3]) begin
-				if (!regs[4'h0]) branch = 1;
+				if (!rr) branch = 1;
 			end else
-				if (!regs[4'h1]) branch = 1;
+				if (!rs) branch = 1;
 		end
 		else if (jnzr) begin
-			mx = regs[15];
 			if (!instr_o[3]) begin
 				if (regs[4'h0]) branch = 1;
 			end else
@@ -160,9 +220,9 @@ always_ff @(negedge clk) begin
 		else if (bnzr) begin
 			if (regs[src])  branch = 1;
 		end
-		
 	end
-	/*
+
+	
 	else begin
 		if (alu_en) begin
 			regs[4'h0] = r;
@@ -283,7 +343,28 @@ always_ff @(negedge clk) begin
 			endcase
 		end
 		
-	end*/
+	end
 end
+*/
 
-endmodule
+
+/*
+case (reg_src)
+					r:
+					s:
+					c:
+					d:
+					m:
+					n:
+					x:
+					y:
+					a:
+					b:
+					i:
+					j:
+					k:
+					l:
+					z:
+					p:
+					endcase
+*/

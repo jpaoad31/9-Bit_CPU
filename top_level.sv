@@ -12,7 +12,7 @@ wire [8:0] instr;								// current instruction
 
 wire [7:0] storData, loadData;					// data to/from memory
 
-wire	mem_sel,								// control sig (data memory)
+wire	mem_sel, loadEn, storEn,				// control sig (data memory)
 		alu_en, alu_rs,							// control sig (alu enable & output sel)
 		movp;									// bal instruction flag
 register reg_src, reg_dst;						// register selection (mov/load/stor)
@@ -33,7 +33,7 @@ control_logic ctrlr(.*);
 
 arithmetic_logic alu(.r_out(r), .s_out(s), .*);
 
-register_file regFile(.*);
+register_file_r regFile(.rr(r), .rs(s), .rx(x), .ry(y), .ra(a), .rb(b), .rm(m), .rp(p), .*);
 
 data_memory #(.size(256)) dm1 (.*);
 
