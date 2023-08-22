@@ -1,6 +1,6 @@
 module reg_arithmetic (
-	input [7:0] x, r, s,
-	input [3:0] v,
+	input [7:0] x,
+	input [2:0] v,
 	input incr, decr, jizr, jnzr,
 
 	output [7:0] res);
@@ -23,14 +23,9 @@ always_comb begin
 		sub = 1;
 	end
 
-	else if(jmpf) begin
-		y[4:1] = v;
+	else begin			// jizr | jnzr
+		y[3:1] = v;
 		add = 1;
-	end
-
-	else begin // jmpb
-		y[4:1] = v;
-		sub = 1;
 	end
 
 end

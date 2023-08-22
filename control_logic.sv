@@ -2,9 +2,9 @@ import instr_pack ::*;
 
 module control_logic (
 	input [8:0] instr,
-	input start,
+	input start, clk,
 
-	output logic mem_sel, alu_rs, done, alu_en,
+	output logic mem_sel, alu_rs, done, alu_en, movp,
 	output register reg_src, reg_dst,
 	output math math_op,
 	output reg_OP reg_op,
@@ -13,6 +13,8 @@ module control_logic (
 always_comb begin
 	instr_o = instr[3:0];
 	mem_sel = 1'bz;
+	done = 0;
+	movp = 0;
 	$cast(reg_src, 4'bz);
 	$cast(reg_dst, 4'bz);
 
@@ -83,10 +85,16 @@ always_comb begin
 				reg_op = flipEn;
 			else				// func
 				case (instr[3:0])
+				0: reg_op = ljp0;
+				1: reg_op = ljp1;
+				2: reg_op = ljp2;
+				3: reg_op = ljp3;
 
+				12: reg_op = funcEn;
+				13: reg_op = funcEn;
+				default: done = 1;
 
 				endcase
-				reg_op = funcEn;
 		end
 		endcase
 	end
@@ -101,6 +109,7 @@ always_comb begin
 		end
 
 		else begin				// move operation
+			if (instr[7:4] == 4'hf) movp = 1;
 			reg_op = movEn;
 			$cast(reg_dst, instr[7:4]);
 			$cast(reg_src, instr[3:0]);

@@ -13,7 +13,8 @@ wire [8:0] instr;								// current instruction
 wire [7:0] storData, loadData;					// data to/from memory
 
 wire	mem_sel,								// control sig (data memory)
-		alu_en, alu_rs;							// control sig (alu enable & output sel)
+		alu_en, alu_rs,							// control sig (alu enable & output sel)
+		movp;									// bal instruction flag
 register reg_src, reg_dst;						// register selection (mov/load/stor)
 math math_op;									// math operation (alu)
 reg_OP reg_op;

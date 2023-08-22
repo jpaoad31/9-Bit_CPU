@@ -29,7 +29,7 @@ package instr_pack;
 		loadEn,	storEn,	incrEn,	decrEn,
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
 		no16,	sethEn,	no18,	no19,
-		lslcEn,	lsrcEn,	flipEn,	funcEn
+		lslcEn,	lsrcEn,	flipEn,	funcEn,
 		ljp0,	ljp1,	ljp2,	ljp3
 	} reg_OP;
 endpackage

@@ -1,3 +1,9 @@
+TMR ISA
+
+By John Adams
+
+for J. Eldon's cse141l SS2 2023
+
 registers
 
 address:	a, b
