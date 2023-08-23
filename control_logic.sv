@@ -2,7 +2,7 @@ import instr_pack ::*;
 
 module control_logic (
 	input [8:0] instr,
-	input start, clk,
+	input start,
 
 	output logic mem_sel, alu_rs, done, alu_en, movp, loadEn, storEn,
 	output register reg_src, reg_dst,
@@ -109,7 +109,7 @@ always_comb begin
 	end
 
 	default:						// move & literals
-		if (!instr[6:5]) begin		// load literal
+		if (!instr[8:5]) begin		// load literal
 			instr_o = instr[3:0];	// set out register
 			if (instr[4])
 				reg_op = lit_hi;

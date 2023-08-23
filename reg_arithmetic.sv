@@ -25,7 +25,10 @@ always_comb begin
 	end
 
 	else begin			// jizr | jnzr
-		y[3:1] = v;
+		if(v)
+			y[3:1] = v;
+		else
+			y[4:0] = 5'b10000;	// prevent 0-distance jumps
 		add = 1;
 	end
 

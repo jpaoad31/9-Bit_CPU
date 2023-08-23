@@ -15,7 +15,7 @@ logic [7:0] npc=0, temp=0;
 
 logic [7:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
-reg_arithmetic pcALU(.x(rp[7:0]), .v(3'b0), .incr(1), .decr(0), .jizr(0), .jnzr(0), .res(npc));
+reg_arithmetic pcALU(.x(rp[7:0]), .v(3'b0), .incr(1'b1), .decr(1'b0), .jizr(1'b0), .jnzr(1'b0), .res(npc));
 
 logic	branch=0, othr=0, mov=0, incr=0, decr=0,
 		bizr=0, bnzr=0, jizr=0, jnzr=0,
@@ -109,7 +109,9 @@ always_ff @(posedge clk) begin
 	else rp = start_address;
 end
 
+// branch checking
 always_comb begin
+	branch = 0;
 	if ((incr||decr||mov||bizr||bnzr)&&!movp) begin
 		case (reg_src)
 			r: temp = rr;
@@ -136,6 +138,22 @@ always_comb begin
 		temp = 8'b0;
 		mx = temp;
 	end
+	case (reg_op)
+		jizrEn: begin
+			if (!instr_o[3] && !rr) branch = 1;
+			else if (!rs) branch = 1;
+			end
+		jnzrEn: begin
+			if (!instr_o[3] && rr) branch = 1;
+			else if (rs) branch = 1;
+			end
+		bizrEn: begin
+			if (!temp) branch = 1;
+			end
+		bnzrEn: begin
+			if (temp) branch = 1;
+			end
+	endcase
 end
 
 always_comb
@@ -161,7 +179,6 @@ always_latch
 			endcase
 
 always_ff @(negedge clk) begin
-	branch = 0;
 	if (loadEn)
 		case (reg_dst)
 		c: rc = loadData;
@@ -208,20 +225,6 @@ always_ff @(negedge clk) begin
 					l: rl = res;
 					z: rz = res;
 			endcase
-			end
-		jizrEn: begin
-			if (!instr_o[3] && !rr) branch = 1;
-			else if (!rs) branch = 1;
-			end
-		jnzrEn: begin
-			if (!instr_o[3] && rr) branch = 1;
-			else if (rs) branch = 1;
-			end
-		bizrEn: begin
-			if (!temp) branch = 1;
-			end
-		bnzrEn: begin
-			if (temp) branch = 1;
 			end
 		sethEn: begin
 			case (instr_o)
