@@ -80,10 +80,10 @@ package code_pack;
 				lj2 = 4'b0010,
 				lj3 = 4'b0011,
 
-				srtl= 4'b1100,
-				strh= 4'b1101,
+				srtl = 4'b1100,
+				strh = 4'b1101,
 
-				done= 4'b1111;
+				dne = 4'b1111;
 
 	// register selection
 	logic		sr = 1'b0,

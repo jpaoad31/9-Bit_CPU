@@ -133,11 +133,12 @@ always_comb begin
 			default: temp = 8'b0;
 		endcase
 		if (eql && mov) temp = 8'b0;
-		mx = temp;
+	end else if (jizr||jnzr) begin
+		temp = rp[7:0]; 
 	end else begin
 		temp = 8'b0;
-		mx = temp;
 	end
+	mx = temp;
 	case (reg_op)
 		jizrEn: begin
 			if (!instr_o[3] && !rr) branch = 1;
