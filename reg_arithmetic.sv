@@ -5,7 +5,8 @@ module reg_arithmetic (
 
 	output [7:0] res);
 logic add, sub;
-logic [7:0] y, yp, ny, s, c, cs;
+logic [7:0] y, yp, ny;
+wire [7:0] s, c, cs;
 
 always_comb begin
 

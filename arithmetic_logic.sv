@@ -5,18 +5,29 @@ module arithmetic_logic(
 	input math math_op,					// math operation to perform
 	input alu_en, alu_rs,				// 0:r, 1:s
 
-	output logic [7:0] s_out=0, r_out=0);	// output registers
+	output logic [7:0] s_out=1, r_out=0);	// output registers
 
 	//output logic carry, zero, shift_out, equal
 
-logic [7:0] yp, ny, s, c, cs, res;
+logic [7:0] yp, ny, res;
+wire [7:0] c, cs, s;
 logic subEn=0;
 
 assign ny = ~y;
 
 always_latch begin
+	if (alu_en) begin
+		if (alu_rs)
+				s_out = res;
+			else
+				r_out = res;
+	end
+end
+
+always_comb begin
 	subEn = 0;
 	yp = 8'bz;
+	res = 8'b0;
 
 	if (alu_en) begin
 		case (math_op)
@@ -74,10 +85,6 @@ always_latch begin
 
 			default: res = 8'b0;
 		endcase
-		if (alu_rs)
-				s_out = res;
-			else
-				r_out = res;
 	end
 end
 

@@ -11,12 +11,14 @@ package instr_pack;
 
 	typedef enum logic[3:0] {
 		r, s, c, d, m, n, x, y,
-		a, b, i, j, k, l, z, p
+		a, b, i, j, k, l, z, p,
+		no_reg = 4'bz
 	} register;
 
 	typedef enum logic[3:0] {
 		amp, lor, flp, eor, rsc, lsc, rol, ror,
-		add, sub, eql8,eql5,revx,revy,parx,pary
+		add, sub, eql8,eql5,revx,revy,parx,pary,
+		no_mth = 4'bz
 	} math;
 
 	typedef enum logic[1:0] {
@@ -30,6 +32,7 @@ package instr_pack;
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
 		no16,	sethEn,	no18,	no19,
 		lslcEn,	lsrcEn,	flipEn,	funcEn,
-		ljp0,	ljp1,	ljp2,	ljp3
+		ljp0,	ljp1,	ljp2,	ljp3,
+		no_rop = 5'bz
 	} reg_OP;
 endpackage

@@ -11,18 +11,18 @@ module control_logic (
 	output logic [3:0] instr_o);
 
 always_comb begin
-	math_op = amp;
-	reg_op = non0;
+	math_op = no_mth;
+	reg_op = no_rop;
 	instr_o = instr[3:0];
-	mem_sel = 0;
+	mem_sel = 1'bz;
 	done = 0;
 	movp = 0;
 	loadEn = 0;
 	storEn = 0;
-	alu_rs = 0;
+	alu_rs = 1'bz;
 	alu_en = 0;
-	reg_src = r;
-	reg_dst = l;
+	reg_src = no_reg;
+	reg_dst = no_reg;
 
 	case (instr[8:7])
 	2: begin						// data & branch
@@ -77,6 +77,7 @@ always_comb begin
 		end
 
 		1: begin					// alu math
+			alu_en = 1;
 			alu_rs = instr[4];
 			$cast(math_op, instr[3:0]);
 		end

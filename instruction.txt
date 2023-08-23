@@ -18,25 +18,25 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 32 instructions with 4-bit operand
 
 87654
-00 // register set & move
---000 litl	{4'b val}				// load 4'b in lower nibble of l
---001 lith	{4'b val}				// load 4'b in upper nibble of l
---010 movc	{4'b reg}				// copy contents of reg to c
---011 movd	{4'b reg}				// ↓ note: movc c: c = 8'b00000000
---100 movm	{4'b reg}				// ↓
---101 movn	{4'b reg}				// ↓
---110 movx	{4'b reg}				// ↓
---111 movy	{4'b reg}				// ↓
+0 // register set & move
+-0000 litl	{4'b val}				// load 4'b in lower nibble of l
+-0001 lith	{4'b val}				// load 4'b in upper nibble of l
+-0010 movc	{4'b reg}				// copy contents of reg to c
+-0011 movd	{4'b reg}				// ↓ note: movc c: c = 8'b00000000
+-0100 movm	{4'b reg}				// ↓
+-0101 movn	{4'b reg}				// ↓
+-0110 movx	{4'b reg}				// ↓
+-0111 movy	{4'b reg}				// ↓
 
-01
---000 mova	{4'b reg}				// ↓
---001 movb	{4'b reg}				// ↓
---010 movi	{4'b reg}				// ↓
---011 movj	{4'b reg}				// ↓
---100 movk	{4'b reg}				// ↓
---101 movl	{4'b reg}				// ↓
---110 movz	{4'b reg}				// ↓
---111 movp	{4'b reg}				// set pc to value in reg 
+0
+-1000 mova	{4'b reg}				// ↓
+-1001 movb	{4'b reg}				// ↓
+-1010 movi	{4'b reg}				// ↓
+-1011 movj	{4'b reg}				// ↓
+-1100 movk	{4'b reg}				// ↓
+-1101 movl	{4'b reg}				// ↓
+-1110 movz	{4'b reg}				// ↓
+-1111 movp	{4'b reg}				// set pc to value in reg 
 
 10 // data & branch (reg_OP)
 --000 load	{0:a,1:b}	{3'b reg}	// read address a/b into reg (exclude r,s)
@@ -49,14 +49,14 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 --111 bnzr	{4'b reg}				// branch to z if reg != 0
 h
 11 // math & logic
---000 
+--000 ---							// unused top-level instruction
 --001 seth	{4'b val}				// set {n,m} at 4'b to 1
 --010 mthr	{4'b opp}				// do opp and store result in r
 --011 mths	{4'b opp}				// do opp and store result in s
---100 lslc	{0:m,1:n}	{3'b val}	// 
---101 lsrc	{0:m,1:n}	{3'b val}	//
+--100 lslc	{0:m,1:n}	{3'b val}	// logical shift L m/n w/ carry from m/n by val
+--101 lsrc	{0:m,1:n}	{3'b val}	// logical shift R m/n w/ carry from m/n by val
 --110 flip	{4'b reg}				// flip bit across {n,m} by val reg[3:0]
---111 func	{4'b fun}				// perform custom function
+--111 func	{4'b fun}				// perform custom functions
 
 
 fun function parameters
@@ -67,7 +67,7 @@ fun function parameters
 	01 00	
 	01 01	
 	01 10	
-	01 11	
+	01 11							// lots of unused functions
 
 	10 00	
 	10 01	
@@ -99,7 +99,7 @@ reg Register Values
 	1110	z	4'he				// branch
 	1111	p	4'hf				// program_counter
 
-opp Math Operations
+opp Math Operations (one/two inputs -> one output (r or s))
 	0000	amp		x&y
 	0001	lor		x|y
 	0010	flp		~x
@@ -112,14 +112,16 @@ opp Math Operations
 	1000	add		x+y
 	1001	sub		x-y
 	1010	eql8	x == y
-	1011	eql5	x[7:4] == m[7:4]
+	1011	eql5	x[7:4] == m[7:4]	// only operation to use m
 	1100	revx	x[0:7]
 	1101	revy	y[0:7]
 	1110	parx	^x
 	1111	pary	^y
 
 
-Hardware Encode/Decode // not implemented
+Hardware Encode/Decode
+// not implemented because they are too powerful
+// and will rip the fabric of space and time.
 	
 	1000	prc0	^(b11:1,p8,p4,p2,p1) 
 	1001	prc1	^(b11,b9,b7,b5,b4,b2,b1) 

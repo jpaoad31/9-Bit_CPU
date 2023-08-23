@@ -6,25 +6,27 @@ module register_file_r(
 	input register reg_src, reg_dst, 
 	input [3:0] instr_o,
 	input [7:0] rr, rs, loadData,
-	output logic [7:0] ra, rb, rx, ry, rm, storData=0,
+	output logic [7:0] ra=8, rb=9, rx=6, ry=7, rm=4, storData=0,
 	output logic [9:0] rp=0);
 
-logic [7:0] rc, rd, rn, ri, rj, rk, rl, rz;
+logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rl=13, rz=14;
 logic [9:0] start_address=0;
-logic [7:0] npc=0, temp;
+logic [7:0] npc=0, temp=0;
 
 logic [7:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
 reg_arithmetic pcALU(.x(rp[7:0]), .v(3'b0), .incr(1), .decr(0), .jizr(0), .jnzr(0), .res(npc));
 
-logic	branch, othr, mov, incr, decr,
-		bizr, bnzr, jizr, jnzr,
-		lj0, lj1, lj2, lj3;
+logic	branch=0, othr=0, mov=0, incr=0, decr=0,
+		bizr=0, bnzr=0, jizr=0, jnzr=0,
+		lj0=0, lj1=0, lj2=0, lj3=0;
 
 logic eql;
+
+
 assign eql = (reg_src == reg_dst);
 
-// register operations
+// register operation flags
 always_comb begin
 	mov		=0;
 	incr	=0;
@@ -90,16 +92,16 @@ always_ff @(posedge clk) begin
 			default: rp = 10'b0;
 			endcase
 
-		else if (ljp0) begin
+		else if (lj0) begin
 				rp = {2'b00, rz};
 		end
-		else if (ljp1) begin
+		else if (lj1) begin
 				rp = {2'b01, rz};
 		end
-		else if (ljp2) begin
+		else if (lj2) begin
 				rp = {2'b10, rz};
 		end
-		else if (ljp3) begin
+		else if (lj3) begin
 				rp = {2'b11, rz};
 		end
 		else	rp[7:0] = npc;
@@ -126,6 +128,7 @@ always_comb begin
 			l: temp = rl;
 			z: temp = rz;
 			p: temp = rp[7:0];
+			default: temp = 8'b0;
 		endcase
 		if (eql && mov) temp = 8'b0;
 		mx = temp;
@@ -135,9 +138,40 @@ always_comb begin
 	end
 end
 
+always_comb
+	if (storEn)
+		case (reg_src)
+		r: storData = rr;
+		s: storData = rs;
+		c: storData = rc;
+		d: storData = rd;
+		m: storData = rm;
+		n: storData = rn;
+		x: storData = rx;
+		y: storData = ry;
+		default: storData = 8'bz;
+		endcase
+	else storData = 8'bz;
+
+always_latch
+	if (reg_op == funcEn)
+			case (instr_o)
+				4'b1100: start_address[7:0] = l;
+				4'b1101: start_address[1:0] = l[1:0];
+			endcase
 
 always_ff @(negedge clk) begin
 	branch = 0;
+	if (loadEn)
+		case (reg_dst)
+		c: rc = loadData;
+		d: rd = loadData;
+		m: rm = loadData;
+		n: rn = loadData;
+		x: rx = loadData;
+		y: ry = loadData;
+		endcase
+	else
 	case (reg_op)
 		lit_lo: rl[3:0] = instr_o;
 		lit_hi: rl[7:4] = instr_o;
@@ -190,162 +224,91 @@ always_ff @(negedge clk) begin
 			if (temp) branch = 1;
 			end
 		sethEn: begin
+			case (instr_o)
+				4'h0: rm[0] = 1'b1;
+				4'h1: rm[1] = 1'b1;
+				4'h2: rm[2] = 1'b1;
+				4'h3: rm[3] = 1'b1;
+				4'h4: rm[4] = 1'b1;
+				4'h5: rm[5] = 1'b1;
+				4'h6: rm[6] = 1'b1;
+				4'h7: rm[7] = 1'b1;
+				4'h8: rn[0] = 1'b1;
+				4'h9: rn[1] = 1'b1;
+				4'ha: rn[2] = 1'b1;
+				4'hb: rn[3] = 1'b1;
+				4'hc: rn[4] = 1'b1;
+				4'hd: rn[5] = 1'b1;
+				4'he: rn[6] = 1'b1;
+				4'hf: rn[7] = 1'b1;
+			endcase
+			end
+		lslcEn: begin
+			case (instr_o)
+				4'b0000: rm = rm;
+				4'b0001: rm = {rm[6:0],rn[7]};
+				4'b0010: rm = {rm[5:0],rn[7:6]};
+				4'b0011: rm = {rm[4:0],rn[7:5]};
+				4'b0100: rm = {rm[3:0],rn[7:4]};
+				4'b0101: rm = {rm[2:0],rn[7:3]};
+				4'b0110: rm = {rm[1:0],rn[7:2]};
+				4'b0111: rm = {rm[0]  ,rn[7:1]};
+
+				4'b1000: rn = rn;
+				4'b1001: rn = {rn[6:0],rn[7]};
+				4'b1010: rn = {rn[5:0],rn[7:6]};
+				4'b1011: rn = {rn[4:0],rn[7:5]};
+				4'b1100: rn = {rn[3:0],rn[7:4]};
+				4'b1101: rn = {rn[2:0],rn[7:3]};
+				4'b1110: rn = {rn[1:0],rn[7:2]};
+				4'b1111: rn = {rn[0]  ,rn[7:1]};
+			endcase
+			end
+		lsrcEn: begin
 			case (instr_o[3:0])
-				4'b0: rm[0] = 1'b1;
+				4'b0000: rm = rm;
+				4'b0001: rm = {rn[0]  , rm[7:1]};
+				4'b0010: rm = {rn[1:0], rm[7:2]};
+				4'b0011: rm = {rn[2:0], rm[7:3]};
+				4'b0100: rm = {rn[3:0], rm[7:4]};
+				4'b0101: rm = {rn[4:0], rm[7:5]};
+				4'b0110: rm = {rn[5:0], rm[7:6]};
+				4'b0111: rm = {rn[6:0], rm[7]};
+
+				4'b1000: rn = rn;
+				4'b1001: rn = {rm[0]  , rn[7:1]};
+				4'b1010: rn = {rm[1:0], rn[7:2]};
+				4'b1011: rn = {rm[2:0], rn[7:3]};
+				4'b1100: rn = {rm[3:0], rn[7:4]};
+				4'b1101: rn = {rm[4:0], rn[7:5]};
+				4'b1110: rn = {rm[5:0], rn[7:6]};
+				4'b1111: rn = {rm[6:0], rn[7]};
+			endcase
+			end
+		flipEn: begin
+			case (instr_o)
+				4'b0000: rm = rm ^ 8'b00000001;
+				4'b0001: rm = rm ^ 8'b00000010;
+				4'b0010: rm = rm ^ 8'b00000100;
+				4'b0011: rm = rm ^ 8'b00001000;
+				4'b0100: rm = rm ^ 8'b00010000;
+				4'b0101: rm = rm ^ 8'b00100000;
+				4'b0110: rm = rm ^ 8'b01000000;
+				4'b0111: rm = rm ^ 8'b10000000;
+
+				4'b1000: rn = rn ^ 8'b00000001;
+				4'b1001: rn = rn ^ 8'b00000010;
+				4'b1010: rn = rn ^ 8'b00000100;
+				4'b1011: rn = rn ^ 8'b00001000;
+				4'b1100: rn = rn ^ 8'b00010000;
+				4'b1101: rn = rn ^ 8'b00100000;
+				4'b1110: rn = rn ^ 8'b01000000;
+				4'b1111: rn = rn ^ 8'b10000000;
 			endcase
 			end
 	endcase
 end
 endmodule
-
-/*
-	// check for pc brach conditions
-	if (jizr||jnzr) begin
-		mx = rp[7:0];
-		if (jizr) begin
-			if (!instr_o[3]) begin
-				if (!rr) branch = 1;
-			end else
-				if (!rs) branch = 1;
-		end
-		else if (jnzr) begin
-			if (!instr_o[3]) begin
-				if (regs[4'h0]) branch = 1;
-			end else
-				if (regs[4'h1]) branch = 1;
-		end
-		else if (bizr) begin
-			if (!regs[src])  branch = 1;
-		end
-		else if (bnzr) begin
-			if (regs[src])  branch = 1;
-		end
-	end
-
-	
-	else begin
-		if (alu_en) begin
-			regs[4'h0] = r;
-			regs[4'h1] = s;
-		end
-		else if (lit_lo) regs[4'hd][3:0] = instr_o;
-		else if (lit_hi) regs[4'hd][7:4] = instr_o;
-		
-		else if ((mov&&!movp) && (dst > 4'h1)) begin
-			if (eql) begin
-				if ((src != 0) && (src != 1))
-				regs[src] = 8'b0;
-			end
-			else
-				regs[dst] = regs[src];
-		end
-		
-		else if (loadEn) begin
-			if ((dst != 0) && (dst != 1))
-				regs[dst] = loadData;
-		end
-		
-		else if (storEn)
-			storData = regs[src];
-		else if (incr) begin
-			if ((src != 4'hf) && (src > 4'h1)) begin
-				mx = regs[src];
-			end
-		end
-		else if (decr) begin
-			if ((src != 4'hf) && (src > 4'h1)) begin
-				mx = regs[src];
-			end
-		end
-		
-		else if (seth) begin
-			if (!instr_o[3])
-				regs[4'h4][instr_o[2:0]] = 1'b1;
-			else
-				regs[4'h5][instr_o[2:0]] = 1'b1;
-		end
-		else if (lslc) begin
-			if (!instr_o[3])			// m
-				case (instr_o[2:0])
-				1: regs[4'h4] = {regs[4'h4][6:0], regs[4'h5][7]};
-				2: regs[4'h4] = {regs[4'h4][5:0], regs[4'h5][7:6]};
-				3: regs[4'h4] = {regs[4'h4][4:0], regs[4'h5][7:5]};
-				4: regs[4'h4] = {regs[4'h4][3:0], regs[4'h5][7:4]};
-				5: regs[4'h4] = {regs[4'h4][2:0], regs[4'h5][7:3]};
-				6: regs[4'h4] = {regs[4'h4][1:0], regs[4'h5][7:2]};
-				7: regs[4'h4] = {regs[4'h4][0]  , regs[4'h5][7:1]};
-				default: regs[4'h4] = regs[4'h4];
-				endcase
-			else						// n
-				case (instr_o[2:0])
-				1: regs[4'h5] = {regs[4'h5][6:0], regs[4'h4][7]};
-				2: regs[4'h5] = {regs[4'h5][5:0], regs[4'h4][7:6]};
-				3: regs[4'h5] = {regs[4'h5][4:0], regs[4'h4][7:5]};
-				4: regs[4'h5] = {regs[4'h5][3:0], regs[4'h4][7:4]};
-				5: regs[4'h5] = {regs[4'h5][2:0], regs[4'h4][7:3]};
-				6: regs[4'h5] = {regs[4'h5][1:0], regs[4'h4][7:2]};
-				7: regs[4'h5] = {regs[4'h5][0]  , regs[4'h4][7:1]};
-				default: regs[4'h5] = regs[4'h5];
-				endcase
-		end
-		else if (lsrc) begin
-			if (!instr_o[3])			// m
-				case (instr_o[2:0])
-				1: regs[4'h4] = {regs[4'h5][0]  , regs[4'h4][7:1]};
-				2: regs[4'h4] = {regs[4'h5][1:0], regs[4'h4][7:2]};
-				3: regs[4'h4] = {regs[4'h5][2:0], regs[4'h4][7:3]};
-				4: regs[4'h4] = {regs[4'h5][3:0], regs[4'h4][7:4]};
-				5: regs[4'h4] = {regs[4'h5][4:0], regs[4'h4][7:5]};
-				6: regs[4'h4] = {regs[4'h5][5:0], regs[4'h4][7:6]};
-				7: regs[4'h4] = {regs[4'h5][6:0], regs[4'h4][7]};
-				default: regs[4'h4] = regs[4'h4];
-				endcase
-			else						// n
-				case (instr_o[2:0])
-				1: regs[4'h5] = {regs[4'h4][0]  , regs[4'h5][7:1]};
-				2: regs[4'h5] = {regs[4'h4][1:0], regs[4'h5][7:2]};
-				3: regs[4'h5] = {regs[4'h4][2:0], regs[4'h5][7:3]};
-				4: regs[4'h5] = {regs[4'h4][3:0], regs[4'h5][7:4]};
-				5: regs[4'h5] = {regs[4'h4][4:0], regs[4'h5][7:5]};
-				6: regs[4'h5] = {regs[4'h4][5:0], regs[4'h5][7:6]};
-				7: regs[4'h5] = {regs[4'h4][6:0], regs[4'h5][7]};
-				default: regs[4'h4] = regs[4'h4];
-				endcase
-		end
-		else if (flip) begin
-			if (!instr_o[3])
-				case (instr_o[2:0])
-				0: regs[4'h4] = regs[4'h4] ^ 8'b00000001;
-				1: regs[4'h4] = regs[4'h4] ^ 8'b00000010;
-				2: regs[4'h4] = regs[4'h4] ^ 8'b00000100;
-				3: regs[4'h4] = regs[4'h4] ^ 8'b00001000;
-				4: regs[4'h4] = regs[4'h4] ^ 8'b00010000;
-				5: regs[4'h4] = regs[4'h4] ^ 8'b00100000;
-				6: regs[4'h4] = regs[4'h4] ^ 8'b01000000;
-				default: regs[4'h4] = regs[4'h4] ^ 8'b10000000;
-				endcase
-			else
-				case (instr_o[2:0])
-				0: regs[4'h5] = regs[4'h5] ^ 8'b00000001;
-				1: regs[4'h5] = regs[4'h5] ^ 8'b00000010;
-				2: regs[4'h5] = regs[4'h5] ^ 8'b00000100;
-				3: regs[4'h5] = regs[4'h5] ^ 8'b00001000;
-				4: regs[4'h5] = regs[4'h5] ^ 8'b00010000;
-				5: regs[4'h5] = regs[4'h5] ^ 8'b00100000;
-				6: regs[4'h5] = regs[4'h5] ^ 8'b01000000;
-				default: regs[4'h5] = regs[4'h5] ^ 8'b10000000;
-				endcase
-		end
-		else begin			// func
-			case (instr_o)
-			13: start_address[7:0] = regs[13][7:0];
-			default: start_address[9:8] = regs[13][1:0];
-			endcase
-		end
-		
-	end
-end
-*/
 
 
 /*
