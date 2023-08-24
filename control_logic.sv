@@ -4,10 +4,10 @@ module control_logic (
 	input [8:0] instr,
 	input start,
 
-	output logic mem_sel, alu_rs, done, alu_en, movp, loadEn, storEn,
-	output register reg_src, reg_dst,
-	output math math_op,
-	output reg_OP reg_op,
+	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, jump2sub=0, loadEn=0, storEn=0,
+	output register reg_src=no_reg, reg_dst=no_reg,
+	output math math_op=no_mth,
+	output reg_OP reg_op=no_rop,
 	output logic [3:0] instr_o);
 
 always_comb begin
@@ -16,7 +16,7 @@ always_comb begin
 	instr_o = instr[3:0];
 	mem_sel = 1'bz;
 	done = 0;
-	movp = 0;
+	jump2sub = 0;
 	loadEn = 0;
 	storEn = 0;
 	alu_rs = 1'bz;
@@ -117,8 +117,11 @@ always_comb begin
 				reg_op = lit_lo;
 		end
 
+		else if (instr[7:4] == 4'hf) begin		// jump to subroutine
+			jump2sub = 1;
+		end
+
 		else begin				// move operation
-			if (instr[7:4] == 4'hf) movp = 1;
 			reg_op = movEn;
 			$cast(reg_dst, instr[7:4]);
 			$cast(reg_src, instr[3:0]);

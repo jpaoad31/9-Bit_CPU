@@ -2,16 +2,17 @@ import code_pack ::*;
 
 module atb_top_level ();
 
-logic clk=0, start=0;
+logic clk=1, start=1;
 wire done;
 
 always begin
-	#5ns clk=1;
 	#5ns clk=0;
+	#5ns clk=1;
 end
 
 initial begin
-	#300ns $stop;
+	#12ns start = 0;
+	#400ns $stop;
 end
 
 top_level cpu(.*);
@@ -77,9 +78,34 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {mthr, add};
 	pc++;
-	cpu.im.core[pc] = {stor, sa, r[2:0]};				//29 : mem[3] = 8'b00011011
+	cpu.im.core[pc] = {stor, sa, r[2:0]};	//29 : mem[3] = 8'b00011011
+	pc++;
+	cpu.im.core[pc] = {incr, a};
+	pc++;
+	cpu.im.core[pc] = {lith, 4'b1010};
+	pc++;
+	cpu.im.core[pc] = {litl, 4'b0000};
+	pc++;
+	cpu.im.core[pc] = {movm, l};
+	pc++;
+	cpu.im.core[pc] = {lith, 4'b0000};
+	pc++;
+	cpu.im.core[pc] = {litl, 4'b1111};
+	pc++;
+	cpu.im.core[pc] = {movn, l};
+	pc++;
+	cpu.im.core[pc] = {lslc, sn, 3'b100};
+	pc++;
+	cpu.im.core[pc] = {stor, sa, n[2:0]};
+	pc++;
+	cpu.im.core[pc] = {incr, a};							//38 : mem[4] = 8'b11111010 = {n[3:0],m[7:4]}
 	pc++;
 	cpu.im.core[pc] = {func, dne};
 end
 
 endmodule
+
+/* Instructions tested
+	litl
+	- 
+*/

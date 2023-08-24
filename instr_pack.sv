@@ -11,7 +11,7 @@ package instr_pack;
 
 	typedef enum logic[3:0] {
 		r, s, c, d, m, n, x, y,
-		a, b, i, j, k, l, z, p,
+		a, b, i, j, k, v, z, l,
 		no_reg = 4'bz
 	} register;
 

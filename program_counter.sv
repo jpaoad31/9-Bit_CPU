@@ -1,0 +1,42 @@
+module program_counter(
+input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub,
+		branch, lj0, lj1, lj2, lj3,
+input [7:0] rz, res,
+input [9:0] start_address, subroutine,
+output logic [9:0] rp
+);
+
+wire [9:0] npc;
+pc_increment pcincr(.*);
+
+// program counter update
+always_ff @(posedge clk) begin
+	if (!start) begin
+
+		if (branch) begin
+			if (jizr||jnzr)					rp[7:0] = res;
+			else if (bizr||bnzr)	rp[7:0] = rz;
+		end
+
+		if (jump2sub) begin
+			rp = subroutine;
+		end
+
+		else if (lj0) begin
+				rp = {2'b00, rz};
+		end
+		else if (lj1) begin
+				rp = {2'b01, rz};
+		end
+		else if (lj2) begin
+				rp = {2'b10, rz};
+		end
+		else if (lj3) begin
+				rp = {2'b11, rz};
+		end
+		else	rp[7:0] = npc;
+	end
+	else rp = start_address;
+end
+
+endmodule

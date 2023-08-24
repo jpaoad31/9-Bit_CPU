@@ -27,7 +27,7 @@ package code_pack;
 				bizr = 5'b10110,
 				bnzr = 5'b10111,
 
-			//	---- = 5'b11000,
+			//	jtsr = 5'b11000,
 				seth = 5'b11001,
 				mthr = 5'b11010,
 				mths = 5'b11011,
@@ -51,9 +51,9 @@ package code_pack;
 				i = 4'b1010,
 				j = 4'b1011,
 				k = 4'b1100,
-				l = 4'b1101,
+				v = 4'b1101,
 				z = 4'b1110,
-				p = 4'b1111,
+				l = 4'b1111,
 
 	// math operations
 				amp = 4'b0000,

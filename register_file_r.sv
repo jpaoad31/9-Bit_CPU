@@ -1,7 +1,7 @@
 import instr_pack ::*;
 
 module register_file_r(
-	input clk, movp, start, alu_en, loadEn, storEn,
+	input clk, start, alu_en, loadEn, storEn, jump2sub,
 	input reg_OP reg_op,
 	input register reg_src, reg_dst, 
 	input [3:0] instr_o,
@@ -9,8 +9,9 @@ module register_file_r(
 	output logic [7:0] ra=8, rb=9, rx=6, ry=7, rm=4, storData=0,
 	output logic [9:0] rp=0);
 
-logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rl=13, rz=14;
-logic [9:0] start_address=0;
+logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rv=13, rz=14;
+logic [9:0] start_address=0, rl=15;
+wire [9:0] subroutine;
 logic [7:0] npc=0, temp=0;
 
 logic [7:0] mx=0, res=0;
@@ -23,6 +24,9 @@ logic	branch=0, othr=0, mov=0, incr=0, decr=0,
 
 logic eql;
 
+subroutine_LUT sLUT(.*);
+
+program_counter pc_reg(.*);
 
 assign eql = (reg_src == reg_dst);
 
@@ -63,56 +67,10 @@ always_comb begin
 	endcase
 end
 
-// program counter update
-always_ff @(posedge clk) begin
-	if (!start) begin
-
-		if (branch) begin
-			if (jizr||jnzr)			rp[7:0] = res;
-			else if (bizr||bnzr)	rp[7:0] = rz;
-		end
-
-		else if (movp)				
-			case (reg_src)
-			r: rp[7:0] = rr;
-			s: rp[7:0] = rs;
-			c: rp[7:0] = rc;
-			d: rp[7:0] = rd;
-			m: rp[7:0] = rm;
-			n: rp[7:0] = rn;
-			x: rp[7:0] = rx;
-			y: rp[7:0] = ry;
-			a: rp[7:0] = ra;
-			b: rp[7:0] = rb;
-			i: rp[7:0] = ri;
-			j: rp[7:0] = rj;
-			k: rp[7:0] = rk;
-			l: rp[7:0] = rl;
-			z: rp[7:0] = rz;
-			default: rp = 10'b0;
-			endcase
-
-		else if (lj0) begin
-				rp = {2'b00, rz};
-		end
-		else if (lj1) begin
-				rp = {2'b01, rz};
-		end
-		else if (lj2) begin
-				rp = {2'b10, rz};
-		end
-		else if (lj3) begin
-				rp = {2'b11, rz};
-		end
-		else	rp[7:0] = npc;
-	end
-	else rp = start_address;
-end
-
 // branch checking
 always_comb begin
 	branch = 0;
-	if ((incr||decr||mov||bizr||bnzr)&&!movp) begin
+	if (incr||decr||mov||bizr||bnzr) begin
 		case (reg_src)
 			r: temp = rr;
 			s: temp = rs;
@@ -127,9 +85,9 @@ always_comb begin
 			i: temp = ri;
 			j: temp = rj;
 			k: temp = rk;
-			l: temp = rl;
+			v: temp = rv;
 			z: temp = rz;
-			p: temp = rp[7:0];
+			l: temp = rl[7:0];
 			default: temp = 8'b0;
 		endcase
 		if (eql && mov) temp = 8'b0;
@@ -175,8 +133,8 @@ always_comb
 always_latch
 	if (reg_op == funcEn)
 			case (instr_o)
-				4'b1100: start_address[7:0] = l;
-				4'b1101: start_address[1:0] = l[1:0];
+				4'b1100: start_address[7:0] = v;
+				4'b1101: start_address[1:0] = v[1:0];
 			endcase
 
 always_ff @(negedge clk) begin
@@ -191,8 +149,8 @@ always_ff @(negedge clk) begin
 		endcase
 	else
 	case (reg_op)
-		lit_lo: rl[3:0] = instr_o;
-		lit_hi: rl[7:4] = instr_o;
+		lit_lo: rv[3:0] = instr_o;
+		lit_hi: rv[7:4] = instr_o;
 		movEn: begin
 			case (reg_dst)
 					c: rc = temp;
@@ -206,7 +164,7 @@ always_ff @(negedge clk) begin
 					i: ri = temp;
 					j: rj = temp;
 					k: rk = temp;
-					l: rl = temp;
+					v: rv = temp;
 					z: rz = temp;
 			endcase
 			end
@@ -223,7 +181,7 @@ always_ff @(negedge clk) begin
 					i: ri = res;
 					j: rj = res;
 					k: rk = res;
-					l: rl = res;
+					v: rv = res;
 					z: rz = res;
 			endcase
 			end
@@ -249,7 +207,7 @@ always_ff @(negedge clk) begin
 			end
 		lslcEn: begin
 			case (instr_o)
-				4'b0000: rm = rm;
+				4'b0000: rm = rn;
 				4'b0001: rm = {rm[6:0],rn[7]};
 				4'b0010: rm = {rm[5:0],rn[7:6]};
 				4'b0011: rm = {rm[4:0],rn[7:5]};
@@ -258,19 +216,19 @@ always_ff @(negedge clk) begin
 				4'b0110: rm = {rm[1:0],rn[7:2]};
 				4'b0111: rm = {rm[0]  ,rn[7:1]};
 
-				4'b1000: rn = rn;
-				4'b1001: rn = {rn[6:0],rn[7]};
-				4'b1010: rn = {rn[5:0],rn[7:6]};
-				4'b1011: rn = {rn[4:0],rn[7:5]};
-				4'b1100: rn = {rn[3:0],rn[7:4]};
-				4'b1101: rn = {rn[2:0],rn[7:3]};
-				4'b1110: rn = {rn[1:0],rn[7:2]};
-				4'b1111: rn = {rn[0]  ,rn[7:1]};
+				4'b1000: rn = rm;
+				4'b1001: rn = {rn[6:0],rm[7]};
+				4'b1010: rn = {rn[5:0],rm[7:6]};
+				4'b1011: rn = {rn[4:0],rm[7:5]};
+				4'b1100: rn = {rn[3:0],rm[7:4]};
+				4'b1101: rn = {rn[2:0],rm[7:3]};
+				4'b1110: rn = {rn[1:0],rm[7:2]};
+				4'b1111: rn = {rn[0]  ,rm[7:1]};
 			endcase
 			end
 		lsrcEn: begin
 			case (instr_o[3:0])
-				4'b0000: rm = rm;
+				4'b0000: rm = rn;
 				4'b0001: rm = {rn[0]  , rm[7:1]};
 				4'b0010: rm = {rn[1:0], rm[7:2]};
 				4'b0011: rm = {rn[2:0], rm[7:3]};
@@ -279,7 +237,7 @@ always_ff @(negedge clk) begin
 				4'b0110: rm = {rn[5:0], rm[7:6]};
 				4'b0111: rm = {rn[6:0], rm[7]};
 
-				4'b1000: rn = rn;
+				4'b1000: rn = rm;
 				4'b1001: rn = {rm[0]  , rn[7:1]};
 				4'b1010: rn = {rm[1:0], rn[7:2]};
 				4'b1011: rn = {rm[2:0], rn[7:3]};
@@ -330,8 +288,8 @@ case (reg_src)
 					i:
 					j:
 					k:
-					l:
+					v:
 					z:
-					p:
+					l:
 					endcase
 */
