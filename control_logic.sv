@@ -108,7 +108,7 @@ always_comb begin
 		endcase
 	end
 
-	default:						// move & literals
+	0,1:						// move & literals
 		if (!instr[8:5]) begin		// load literal
 			instr_o = instr[3:0];	// set out register
 			if (instr[4])
@@ -123,6 +123,7 @@ always_comb begin
 			$cast(reg_dst, instr[7:4]);
 			$cast(reg_src, instr[3:0]);
 		end
+	default: reg_op = no_rop;
 	endcase
 end
 endmodule
