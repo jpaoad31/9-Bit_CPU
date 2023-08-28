@@ -1,4 +1,4 @@
-import code_pack ::*;
+import instr_pack ::*;
 
 module atb_top_level ();
 
@@ -98,7 +98,7 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {stor, sa, n[2:0]};
 	pc++;
-	cpu.im.core[pc] = {incr, a};							//38 : mem[4] = 8'b11111010 = {n[3:0],m[7:4]}
+	cpu.im.core[pc] = {incr, a};			//38 : mem[4] = 8'b11111010 = {n[3:0],m[7:4]}
 	pc++;
 	cpu.im.core[pc] = {func, dne};
 end

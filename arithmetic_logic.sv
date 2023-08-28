@@ -32,15 +32,15 @@ always_comb begin
 	if (alu_en) begin
 		case (math_op)
 			// basic logic
-			amp: res = x&y;					// and
-			lor: res = x|y;					// or
-			flp: res = ~x;					// not
-			eor: res = x^y;					// xor
+			AMP: res = x&y;					// and
+			LOR: res = x|y;					// or
+			FLP: res = ~x;					// not
+			EOR: res = x^y;					// xor
 
 			// shift & rotate
-			rsc: res = {y[0], x[7:1]};		// right shift x w/ carry
-			lsc: res = {x[6:0], y[7]};		// left shift x w/ carry
-			rol: begin						// rotate x left by y[2:0]
+			RSC: res = {y[0], x[7:1]};		// right shift x w/ carry
+			LSC: res = {x[6:0], y[7]};		// left shift x w/ carry
+			ROL: begin						// rotate x left by y[2:0]
 				case (y[2:0])
 				0: res = x;
 				1: res = {x[6:0],x[7]};
@@ -52,7 +52,7 @@ always_comb begin
 				7: res = {x[0],  x[7:1]};
 				endcase
 			end
-			ror: begin						// rotate x right by y[2:0]
+			ROR: begin						// rotate x right by y[2:0]
 				case (y[2:0])				// yes I know this is a very redundant
 				0: res = x;					// it is included for compatibility
 				1: res = {x[0],  x[7:1]};
@@ -66,22 +66,22 @@ always_comb begin
 			end
 
 			// math
-			add: begin						// add
+			ADD: begin						// add
 				yp = y;
 				res = s;
 			end
-			sub: begin						// sub
+			SUB: begin						// sub
 				subEn = 1;
 				res = s;
 			end
-			eql8: res = (x == y);			// eql8
-			eql5: res = (x[4:0] == y[4:0]);	// eql5
+			EQL8: res = (x == y);			// eql8
+			EQL5: res = (x[4:0] == y[4:0]);	// eql5
 
 			// parity and reverse
-			revx: res = {x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]};
-			revy: res = {y[0],y[1],y[2],y[3],y[4],y[5],y[6],y[7]};
-			parx: res = ^x;
-			pary: res = ^y;
+			REVx: res = {x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]};
+			REVy: res = {y[0],y[1],y[2],y[3],y[4],y[5],y[6],y[7]};
+			PARx: res = ^x;
+			PARy: res = ^y;
 
 			default: res = 8'b0;
 		endcase
