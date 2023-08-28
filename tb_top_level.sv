@@ -20,19 +20,19 @@ top_level cpu(.*);
 int pc = 0;
 
 initial begin
-	cpu.im.core[pc] = {movl, l};
+	cpu.im.core[pc] = {movv, v};
 	pc++;
 	cpu.im.core[pc] = {litl, 4'b1100};
 	pc++;
 	cpu.im.core[pc] = {lith, 4'b0011};
 	pc++;
-	cpu.im.core[pc] = {movx, l};
+	cpu.im.core[pc] = {movx, v};
 	pc++;
-	cpu.im.core[pc] = {movl, l};
+	cpu.im.core[pc] = {movv, v};
 	pc++;
 	cpu.im.core[pc] = {litl, 4'b0010};
 	pc++;
-	cpu.im.core[pc] = {movy, l};
+	cpu.im.core[pc] = {movy, v};
 	pc++;
 	cpu.im.core[pc] = {mthr, ror};
 	pc++;
@@ -56,13 +56,13 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {movd, d};
 	pc++;
-	cpu.im.core[pc] = {jizr, ss, 3'b010};	// jump pc+4
+	cpu.im.core[pc] = {jizr, ss, 3'b010};	//18 jump pc+4
 	pc++;
 		cpu.im.core[pc] = {litl, 4'b1111};
 		pc++;
 		cpu.im.core[pc] = {lith, 4'b1111};
 		pc++;
-		cpu.im.core[pc] = {movd, l};
+		cpu.im.core[pc] = {movd, v};
 		pc++;
 	cpu.im.core[pc] = {stor, sa, d[2:0]};	//22 : mem[2] = 8'b00000000
 	pc++;
@@ -86,13 +86,13 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {litl, 4'b0000};
 	pc++;
-	cpu.im.core[pc] = {movm, l};
+	cpu.im.core[pc] = {movm, v};
 	pc++;
 	cpu.im.core[pc] = {lith, 4'b0000};
 	pc++;
 	cpu.im.core[pc] = {litl, 4'b1111};
 	pc++;
-	cpu.im.core[pc] = {movn, l};
+	cpu.im.core[pc] = {movn, v};
 	pc++;
 	cpu.im.core[pc] = {lslc, sn, 3'b100};
 	pc++;

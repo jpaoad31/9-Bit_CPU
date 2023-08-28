@@ -14,9 +14,9 @@ package code_pack;
 				movi = 5'b01010,
 				movj = 5'b01011,
 				movk = 5'b01100,
-				movl = 5'b01101,
+				movv = 5'b01101,
 				movz = 5'b01110,
-				movp = 5'b01111,
+				jtsr = 5'b01111,
 
 				load = 5'b10000,
 				stor = 5'b10001,

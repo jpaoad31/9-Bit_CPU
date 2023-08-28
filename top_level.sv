@@ -5,8 +5,8 @@ module top_level(
 	output done);
 
 // registers
-wire [9:0] p;									// program counter
-wire [7:0] a, b, x, y, m, r, s;					// specialty registers
+wire [9:0] pc;									// program counter
+wire [7:0] ra, rb, rx, ry, rm, rr, rs;			// specialty registers
 
 wire [8:0] instr;								// current instruction
 
@@ -24,16 +24,16 @@ logic [7:0] address;
 
 always_comb begin
 	if (mem_sel)
-		address = b;
+		address = rb;
 	else
-		address = a;
+		address = ra;
 end
 
 control_logic ctrlr(.*);
 
-arithmetic_logic alu(.r_out(r), .s_out(s), .*);
+arithmetic_logic alu(.r_out(rr), .s_out(rs), .x(rx), .y(ry), .m(rm), .*);
 
-register_file_r regFile(.rr(r), .rs(s), .rx(x), .ry(y), .ra(a), .rb(b), .rm(m), .rp(p), .*);
+register_file_r regFile(.rp(pc), .*);
 
 data_memory #(.size(64)) dm1 (.*);
 

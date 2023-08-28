@@ -14,26 +14,30 @@ always_ff @(posedge clk) begin
 	if (!start) begin
 
 		if (branch) begin
-			if (jizr||jnzr)					rp[7:0] = res;
-			else if (bizr||bnzr)	rp[7:0] = rz;
+			if (jizr||jnzr)			rp[7:0] <= res;
+			else if (bizr||bnzr)	rp[7:0] <= rz;
 		end
 
-		if (jump2sub) begin
-			rp = subroutine;
+		else if (jump2sub) begin
+			rp <= subroutine;
 		end
 
 		else if (lj0) begin
-				rp = {2'b00, rz};
+				rp <= {2'b00, rz};
 		end
+
 		else if (lj1) begin
-				rp = {2'b01, rz};
+				rp <= {2'b01, rz};
 		end
+
 		else if (lj2) begin
-				rp = {2'b10, rz};
+				rp <= {2'b10, rz};
 		end
+
 		else if (lj3) begin
-				rp = {2'b11, rz};
+				rp <= {2'b11, rz};
 		end
+		
 		else	rp[7:0] = npc;
 	end
 	else rp = start_address;

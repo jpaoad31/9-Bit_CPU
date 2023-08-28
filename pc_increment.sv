@@ -14,7 +14,7 @@ full_adder fa4(.x(rp[4]), .y(1'b0), .ci(c[3]), .s(npc[4]), .co(c[4]), .en(1'b1))
 full_adder fa5(.x(rp[5]), .y(1'b0), .ci(c[4]), .s(npc[5]), .co(c[5]), .en(1'b1));
 full_adder fa6(.x(rp[6]), .y(1'b0), .ci(c[5]), .s(npc[6]), .co(c[6]), .en(1'b1));
 full_adder fa7(.x(rp[7]), .y(1'b0), .ci(c[6]), .s(npc[7]), .co(c[7]), .en(1'b1));
-full_adder fa8(.x(rp[8]), .y(1'b0), .ci(c[6]), .s(npc[7]), .co(c[8]), .en(1'b1));
-full_adder fa9(.x(rp[9]), .y(1'b0), .ci(c[6]), .s(npc[7]), .co(c[9]), .en(1'b1));
+full_adder fa8(.x(rp[8]), .y(1'b0), .ci(c[6]), .s(npc[8]), .co(c[8]), .en(1'b1));
+full_adder fa9(.x(rp[9]), .y(1'b0), .ci(c[6]), .s(npc[9]), .co(c[9]), .en(1'b1));
 
 endmodule

@@ -72,22 +72,22 @@ always_comb begin
 	branch = 0;
 	if (incr||decr||mov||bizr||bnzr) begin
 		case (reg_src)
-			r: temp = rr;
-			s: temp = rs;
-			c: temp = rc;
-			d: temp = rd;
-			m: temp = rm;
-			n: temp = rn;
-			x: temp = rx;
-			y: temp = ry;
-			a: temp = ra;
-			b: temp = rb;
-			i: temp = ri;
-			j: temp = rj;
-			k: temp = rk;
-			v: temp = rv;
-			z: temp = rz;
-			l: temp = rl[7:0];
+			regr: temp = rr;
+			regs: temp = rs;
+			regc: temp = rc;
+			regd: temp = rd;
+			regm: temp = rm;
+			regn: temp = rn;
+			regx: temp = rx;
+			regy: temp = ry;
+			rega: temp = ra;
+			regb: temp = rb;
+			regi: temp = ri;
+			regj: temp = rj;
+			regk: temp = rk;
+			regv: temp = rv;
+			regz: temp = rz;
+			regl: temp = rl[7:0];
 			default: temp = 8'b0;
 		endcase
 		if (eql && mov) temp = 8'b0;
@@ -118,14 +118,14 @@ end
 always_comb
 	if (storEn)
 		case (reg_src)
-		r: storData = rr;
-		s: storData = rs;
-		c: storData = rc;
-		d: storData = rd;
-		m: storData = rm;
-		n: storData = rn;
-		x: storData = rx;
-		y: storData = ry;
+		regr: storData = rr;
+		regs: storData = rs;
+		regc: storData = rc;
+		regd: storData = rd;
+		regm: storData = rm;
+		regn: storData = rn;
+		regx: storData = rx;
+		regy: storData = ry;
 		default: storData = 8'bz;
 		endcase
 	else storData = 8'bz;
@@ -133,19 +133,19 @@ always_comb
 always_latch
 	if (reg_op == funcEn)
 			case (instr_o)
-				4'b1100: start_address[7:0] = v;
-				4'b1101: start_address[1:0] = v[1:0];
+				4'b1100: start_address[7:0] = rv;
+				4'b1101: start_address[1:0] = rv[1:0];
 			endcase
 
 always_ff @(negedge clk) begin
 	if (loadEn)
 		case (reg_dst)
-		c: rc = loadData;
-		d: rd = loadData;
-		m: rm = loadData;
-		n: rn = loadData;
-		x: rx = loadData;
-		y: ry = loadData;
+		regc: rc = loadData;
+		regd: rd = loadData;
+		regm: rm = loadData;
+		regn: rn = loadData;
+		regx: rx = loadData;
+		regy: ry = loadData;
 		endcase
 	else
 	case (reg_op)
@@ -153,36 +153,36 @@ always_ff @(negedge clk) begin
 		lit_hi: rv[7:4] = instr_o;
 		movEn: begin
 			case (reg_dst)
-					c: rc = temp;
-					d: rd = temp;
-					m: rm = temp;
-					n: rn = temp;
-					x: rx = temp;
-					y: ry = temp;
-					a: ra = temp;
-					b: rb = temp;
-					i: ri = temp;
-					j: rj = temp;
-					k: rk = temp;
-					v: rv = temp;
-					z: rz = temp;
+				regc: rc = temp;
+				regd: rd = temp;
+				regm: rm = temp;
+				regn: rn = temp;
+				regx: rx = temp;
+				regy: ry = temp;
+				rega: ra = temp;
+				regb: rb = temp;
+				regi: ri = temp;
+				regj: rj = temp;
+				regk: rk = temp;
+				regv: rv = temp;
+				regz: rz = temp;
 			endcase
 			end
 		incrEn, decrEn: begin
 			case (reg_dst)
-					c: rc = res;
-					d: rd = res;
-					m: rm = res;
-					n: rn = res;
-					x: rx = res;
-					y: ry = res;
-					a: ra = res;
-					b: rb = res;
-					i: ri = res;
-					j: rj = res;
-					k: rk = res;
-					v: rv = res;
-					z: rz = res;
+				regc: rc = res;
+				regd: rd = res;
+				regm: rm = res;
+				regn: rn = res;
+				regx: rx = res;
+				regy: ry = res;
+				rega: ra = res;
+				regb: rb = res;
+				regi: ri = res;
+				regj: rj = res;
+				regk: rk = res;
+				regv: rv = res;
+				regz: rz = res;
 			endcase
 			end
 		sethEn: begin
