@@ -3,10 +3,10 @@ input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub, retFsub,
 		branch, lj0, lj1, lj2, lj3,
 input [7:0] rz,
 input [9:0] start_address, subroutine, rl, res,
-output logic [9:0] rp=10'b0000000000
+output logic [9:0] rp=10'b0000000000,
+wire [9:0] npc
 );
 
-wire [9:0] npc;
 pc_increment pcincr(.*);
 
 // program counter update

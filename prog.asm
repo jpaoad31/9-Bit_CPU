@@ -35,8 +35,8 @@ movm c				// .parity_4 m= {b8, b7, b6, b5, b4, b3, b2, b1}
 	valh 0000
 	vall 0001		// v= 00000001
 	movx r			// x= {000, b1, 0000}
-	movy v			// y= 00000111
-	mthr rol		// r= {0000, b1, 000}
+	movy v			// y= 00000001
+	mthr ror		// r= {0000, b1, 000}
 	movx r			// x= r
 	movy c			// y= {b4, b3, b2, 00000}
 	mthr lor		// r= {b4, b3, b2, 0, b1, 000}
@@ -55,8 +55,8 @@ movm c				// .parity_4 m= {b8, b7, b6, b5, b4, b3, b2, b1}
 	mthr eor		// r= ^{b11, b10, b9, b8, b4, b3, b2}
 	jizr r	010		// if odd parity else jump by 0100 4 (pc= 60)
 		valh 0000	
-		vall 0100
-		flip v		// m^0001000
+		vall 0101
+		flip v		// m^00010000
 	movc m			// c= m= {b4, b3, b2, p4, b1, 000}
 movx c				// .parity_2 x= c
 	valh = 1100

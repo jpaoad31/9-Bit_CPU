@@ -10,7 +10,7 @@ module register_file_r(
 	output logic [9:0] rp=0);
 
 logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rv=13, rz=14;
-logic [9:0] start_address=0, rl=15;
+logic [9:0] start_address=0, rl=15, npc;
 wire [9:0] subroutine;
 logic [9:0] temp=0;
 
@@ -157,6 +157,8 @@ always_ff @(posedge clk) begin
 		regx: rx <= loadData;
 		regy: ry <= loadData;
 		endcase
+	else if (jump2sub) rl <= npc;
+
 	else
 	case (reg_op)
 		val_lo: rv[3:0] <= instr_o;

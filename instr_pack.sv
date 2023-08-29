@@ -108,6 +108,7 @@ package instr_pack;
 				lj1 = 4'b0001,
 				lj2 = 4'b0010,
 				lj3 = 4'b0011,
+				noop = 4'b0100,
 
 				srtl = 4'b1100,
 				strh = 4'b1101,

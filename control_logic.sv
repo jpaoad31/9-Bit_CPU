@@ -4,7 +4,7 @@ module control_logic (
 	input [8:0] instr,
 	input start,
 
-	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, loadEn=0, storEn=0,
+	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, loadEn=0, storEn=0, noop=0;
 	output register reg_src=no_reg, reg_dst=no_reg,
 	output math math_op=no_mth,
 	output reg_OP reg_op=no_rop,
@@ -22,6 +22,7 @@ always_comb begin
 	alu_en = 0;
 	reg_src = no_reg;
 	reg_dst = no_reg;
+	noop = 0;
 
 	case (instr[8:7])
 	2: begin						// data & branch
@@ -98,6 +99,7 @@ always_comb begin
 				1: reg_op = ljp1;
 				2: reg_op = ljp2;
 				3: reg_op = ljp3;
+				4: noop = 1;
 
 				12: reg_op = funcEn;
 				13: reg_op = funcEn;
