@@ -25,7 +25,7 @@ initial begin
 		core[q] = {lslc, sn, 3'd4}; q++;			// n= {0,b11,b10,b9,b8,b7,b6,b5}
 		core[q] = {movm, m}; q++;					// m= 8'b0
 		core[q] = {lslc, sn, 3'd1}; q++;				// n= {b11,b10,b9,b8,b7,b6,b5,0}
-		core[q] = {movx, m}; q++;
+		core[q] = {movx, n}; q++;
 		core[q] = {mthr, parx}; q++;				// r= {0000_000, p8}
 		core[q] = {movy, r}; q++;
 		core[q] = {mths, lor}; q++;				// s= {b11,b10,b9,b8,b7,b6,b5,p8}
