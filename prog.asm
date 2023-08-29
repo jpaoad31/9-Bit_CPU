@@ -1,9 +1,9 @@
-litl 1101			// program 1 start (1)
-lith 0001
-mova l				// store 29 in a
-litl 1011	
-lith 0011	
-movb l				// store 59 in b
+vall 1101			// program 1 start (1)
+valh 0001
+mova v				// store 29 in a
+vall 1011	
+valh 0011	
+movb v				// store 59 in b
 load a d			// .load_routine
 	decr a			// d= {00000, b11, b10, b9}
 	load a c		// c= {b8, b7, b6, b5, b4, b3, b2, b1}
@@ -16,35 +16,35 @@ movm c				// .parity_8
 	movx m			// x= m
 	mthr parx		// r= ^x
 	jizr r	010		// if odd parity else jump by 0100 4 (pc = 22)
-		lith 0000	
-		litl 1000
-		flip l		// n^00000001
+		valh 0000	
+		vall 1000
+		flip v		// n^00000001
 	movd n			// d= n= {b11, b10, b9, b8, b7, b6, b5, p8}
 movm c				// .parity_4 m= {b8, b7, b6, b5, b4, b3, b2, b1}
 	movn n			// n= 00000000
 	lslc m 4		// m= {b4, b3, b2, b1, 0, 0, 0, 0}
-	lith 0001
-	litl 0000		// l= 00010000
-	movx l			// x= 00010000
+	valh 0001
+	vall 0000		// v= 00010000
+	movx v			// x= 00010000
 	movy m			// y= {b4, b3, b2, b1, 0000}
 	mthr amp		// r= {000, b1, 0000}
-	lith 1110		// l= 11100000
-	movx l			// x= 11100000
+	valh 1110		// v= 11100000
+	movx v			// x= 11100000
 	mths amp		// s= {b4, b3, b2, 00000}
-	movc s			// c= {b4, b3, b2, 00000}
-	lith 0000
-	litl 0001		// l= 00000001
+	----movc s			// c= {b4, b3, b2, 00000}
+	valh 0000
+	vall 0001		// v= 00000001
 	movx r			// x= {000, b1, 0000}
-	movy l			// y= 00000111
+	movy v			// y= 00000111
 	mthr rol		// r= {0000, b1, 000}
 	movx r			// x= r
 	movy c			// y= {b4, b3, b2, 00000}
 	mthr lor		// r= {b4, b3, b2, 0, b1, 000}
 	movm r			// m= r
 	movy d			// y= {b11, b10, b9, b8, b7, b6, b5, p8}
-	litl 0000
-	lith 1111		// l= {11110000}
-	movx l			// x= l
+	vall 0000
+	valh 1111		// v= {11110000}
+	movx v			// x= v
 	mthr amp		// r= {b11, b10, b9, b8, 0000}
 	movx r			// x= r
 	mthr parx		// r= ^{b11, b10, b9, b8}
@@ -54,14 +54,14 @@ movm c				// .parity_4 m= {b8, b7, b6, b5, b4, b3, b2, b1}
 	movy s
 	mthr eor		// r= ^{b11, b10, b9, b8, b4, b3, b2}
 	jizr r	010		// if odd parity else jump by 0100 4 (pc= 60)
-		lith 0000	
-		litl 0100
-		flip l		// m^0001000
+		valh 0000	
+		vall 0100
+		flip v		// m^0001000
 	movc m			// c= m= {b4, b3, b2, p4, b1, 000}
 movx c				// .parity_2 x= c
-	lith = 1100
-	litl = 1100
-	movy l			// y= 11001100
+	valh = 1100
+	vall = 1100
+	movy v			// y= 11001100
 	mthr amp		// r= x&y = {b4, b3, 00, b1, 000}
 	movx d			// x= {b11, b10, b9, b8, b7, b6, b5, p8}
 	mths amp		// s= {b11, b10, 00, b7, b6, 00}
@@ -73,14 +73,14 @@ movx c				// .parity_2 x= c
 	movy s
 	mthr eor		// r= ^{b11, b10, b7, b6, b4, b3, b1}
 	jizr r	010		// if odd parity else jump by 0100 4 (pc = 79)
-		lith 0000	
-		litl 0011
-		flip l		// m^00000100
+		valh 0000	
+		vall 0011
+		flip v		// m^00000100
 	movc m			// c= m= {b4, b3, b2, p4, b1, p2, 00}
 movx c				// .parity_1
-	lith 1010
-	litl 1010
-	movy l			// y= 10101010
+	valh 1010
+	vall 1010
+	movy v			// y= 10101010
 	mthr amp		// r= {b4, 0, b2, 0, b1, 000}
 	movx d			// x= {b11, b10, b9, b8, b7, b6, b5, p8}
 	mths amp		// s= {b11, 0, b9, 0, b7, 0, b5, 0}
@@ -92,9 +92,9 @@ movx c				// .parity_1
 	movy s
 	mthr eor		// r= ^{b11, b9, b7, b5, b4, b2, b1}
 	jizr r	010		// if odd parity else jump by 0100 4 (pc= 98)
-		lith 0000	
-		litl 0001
-		flip l		// m^00000010
+		valh 0000	
+		vall 0001
+		flip v		// m^00000010
 	movc m			// c= m= {b4, b3, b2, p4, b1, p2, p1, 0}
 movx c				// .parity_0
 	movy d
@@ -104,21 +104,21 @@ movx c				// .parity_0
 	movy s
 	mthr eor		// r= {b11, b10, b9, b8, b7, b6, b5, p8, b4, b3, b2, p4, b1, p2, p1}
 	jizr r	010		// if odd parity else jump by 0100 4 (pc = 110)
-		lith 0000	
-		litl 0000
-		flip l		// m^00000001
+		valh 0000	
+		vall 0000
+		flip v		// m^00000001
 	movc m			// c= m= {b4, b3, b2, p4, b1, p2, p1, p0}
 stor b n			// .stor_routine
 	decr b
 	stor b m
 	decr b
-litl 0111			// .prog1_complete
+vall 0111			// .prog1_complete
 	ltlh 0000
-	movz l
+	movz v
 	bnzr a			// branch if a != 0
-movl l		// l= 00000000
+movl v		// v= 00000000
 	func strl		// start_address = 0000000000
-	litl 0001		// l= 00000001
+	vall 0001		// v= 00000001
 	func strh		// start_address = 0100000000
 	func done		// done = 1;
 
@@ -252,12 +252,12 @@ movl l		// l= 00000000
 
 
 // program 2 start (256)
-litl 1101			
-lith 0001
-mova l				// store 29 in a
-litl 1011	
-lith 0011	
-movb l				// store 59 in b
+vall 1101			
+valh 0001
+mova v				// store 29 in a
+vall 1011	
+valh 0011	
+movb v				// store 59 in b
 load b d			// .load_routine
 	decr b			// d= {b11, b10, b9, b8, b7, b6, b5, p8}
 	load b c		// c= {b4, b3, b2, p4, b1, p2, p1, p0}
@@ -274,9 +274,9 @@ movm m				// .parity_0
 	movm s			// m= p8
 	lslc m 3		// m= {0000, p8, 000}
 	movn r			// n= p0
-litl 0000			// .parity_4
-	lith 1111
-	movy l			// y= 11110000
+vall 0000			// .parity_4
+	valh 1111
+	movy v			// y= 11110000
 	movx c			// x= {b4, b3, b2, p4, b1, p2, p1, p0}
 	mthr amp		// r= {b4, b3, b2, p4, 0000}
 	movx d			// x= {b11, b10, b9, b8, b7, b6, b5, p8}
@@ -290,9 +290,9 @@ litl 0000			// .parity_4
 	mthr eor		// r= p4 = ^{b11, b10, b9, b8, b4, b3, b2, p4}
 	jizr r 0001		// if odd parity, else jump to 293
 		seth 0010	// m = {0000, p8, p4, 0, 0}
-litl 1100			// .parity_2
-	lith 1100
-	movy l			// y= 11001100
+vall 1100			// .parity_2
+	valh 1100
+	movy v			// y= 11001100
 	movx c			// x= {b4, b3, b2, p4, b1, p2, p1, p0}
 	mthr amp		// r= {b4, b3, 00, b1, p2, 00}
 	movx d			// x= {b11, b10, b9, b8, b7, b6, b5, p8}
@@ -306,9 +306,9 @@ litl 1100			// .parity_2
 	mthr eor		// r= p2 = ^{b11, b10, b7, b6, b4, b3, b1, p2}
 	jizr r 0001		// if odd parity, else jump to 309
 		seth 0001	// m= {0000, p8, p4, p2, 0}
-litl 1010			// .parity_1
-	lith 1010
-	movy l			// y= 10101010
+vall 1010			// .parity_1
+	valh 1010
+	movy v			// y= 10101010
 	movx c			// x= {b4, b3, b2, p4, b1, p2, p1, p0}
 	mthr amp		// r= {b4, 0, b2, 0, b1, 0, p1, 0}
 	movx d			// x= {b11, b10, b9, b8, b7, b6, b5, p8}
@@ -332,24 +332,24 @@ movi m				// .error_correction i= m
 	mths amp		// s= 00000000
 	jizr r 011-		// if b0= 1, else pc= 339
 		flip i		// flip bit in {n,m} in position i[3:0]= {p8, p4, p2, p1}
-		lith 0100	// (one error)
-		litl 0000	// l= 01000000
+		valh 0100	// (one error)
+		vall 0000	// v= 01000000
 		jizr s 101	// jump to 347
 	movk k			// no op padding
 	movx i
 	mthr lor		// r = {0000, p8, p4, p2, p1}
 	jizr r 011		// if b0= 0 && (p8|p4|p2|p1), else jump to 347
-		lith 1000	// (two errors)
-		litl 0000	// l= 10000000
+		valh 1000	// (two errors)
+		vall 0000	// v= 10000000
 		jizr s 001	// jump to 346
-	movl l			// (no errors) l= 00000000
-	movk l
-	movk l 			// k= {F1, F0, 000000}
+	movl v			// (no errors) v= 00000000
+	movk v
+	movk v 			// k= {F1, F0, 000000}
 	movc m			// store data in {d,c}
 	movd n
-lith 1110			// .decode data
-	litl 1000
-	movy l			// y= {11101000} 
+valh 1110			// .decode data
+	vall 1000
+	movy v			// y= {11101000} 
 	movx m			// x= {b4, b3, b2, p4, b1, p2, p1, p0}
 	mthr amp		// r= {b4, b3, b2, 0, b1, 000}
 	movm r			// m= r
@@ -359,14 +359,14 @@ lith 1110			// .decode data
 	lsrc m 010		// m= {00000, b4, b3, b2}
 	lslc m 101		// m= {b4, b3, b2, b1, 0000}
 	movx d			// x= {}
-	lith 0000
-	litl 0111
-	movy l 			// y= 00000111
+	valh 0000
+	vall 0111
+	movy v 			// y= 00000111
 	mthr rol		// r= {p8, b11, b10, b9, b8, b7, b6, b5}
 	movx r			// x= r
-	lith 0111
-	litl 1111
-	movy l			// y= 01111111
+	valh 0111
+	vall 1111
+	movy v			// y= 01111111
 	mthr amp		// r= {0, b11, b10, b9, b8, b7, b6, b5}
 	movn r			// n= r
 	lsrc m 100		// m= {b8, b7, b6, b5, b4, b3, b2, b1}
@@ -381,13 +381,13 @@ stor a d			// .store_routine
 	decr a
 	stor a c
 	decr a
-lith 0000			// check completion
-	litl 0101
-	movz l
+valh 0000			// check completion
+	vall 0101
+	movz v
 	bnzr a			// if a!=0, then continue from 261 (0100000101)
-movl l				// l= 00000000
+movl v				// v= 00000000
 	func strl		// start_address = 0000000000
-	litl 0010		// l= 00000010
+	vall 0010		// v= 00000010
 	func strh		// start_address = 1000000000 (512)
 	func done		// done = 1;
 
@@ -509,12 +509,12 @@ movl l				// l= 00000000
 
 
 // program 3 (512) 1000000000
-litl 0000				// .initialization
-	lith 0010
+vall 0000				// .initialization
+	valh 0010
 	movc c				// c= 00000000 (occurences in byte)
 	movd d				// d= 00000000 (occurences across bytes)
-	movb l				// b= 00100000 (32)
-	movi l				// i= 00100000 (32)
+	movb v				// b= 00100000 (32)
+	movi v				// i= 00100000 (32)
 	mova a				// a= 00000000 (0)
 	load a m			// m= 01234567
 	incr a
@@ -576,9 +576,9 @@ movx j					// x= j (0 if no in-byte occurrences, >0 if atleast one)
 	mthr lor			// r= x= k
 	jizr r 001
 		incr k
-litl 1010				// .check_completion
-	lith 0000
-	movz l				// z=00001010 (10)
+vall 1010				// .check_completion
+	valh 0000
+	movz v				// z=00001010 (10)
 	bnzr i				// if i = 0, else jump back to 1000001010 (522)
 movj j					// j= 00000000 .last_byte0 -------------------------
 	movn n				// n= 00000000
@@ -611,9 +611,9 @@ movx j					// x= j (0 if no in-byte occurrences, >0 if atleast one)
 	mthr lor			// r= x= k
 	jizr r 001
 		incr k
-lith 0010				// .store_complete
-	litl 0001
-	movb l				// b= 00100001 (33)
+valh 0010				// .store_complete
+	vall 0001
+	movb v				// b= 00100001 (33)
 	stor b c			// mem[33] = occurrences in byte
 	movm k
 	incr b

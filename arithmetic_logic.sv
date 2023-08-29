@@ -80,8 +80,8 @@ always_comb begin
 			// parity and reverse
 			REVx: res = {x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]};
 			REVy: res = {y[0],y[1],y[2],y[3],y[4],y[5],y[6],y[7]};
-			PARx: res = ^x;
-			PARy: res = ^y;
+			PARx: res = {7'b0, ^x};
+			PARy: res = {7'b0, ^y};
 
 			default: res = 8'b0;
 		endcase
