@@ -35,7 +35,7 @@ arithmetic_logic alu(.r_out(rr), .s_out(rs), .x(rx), .y(ry), .m(rm), .*);
 
 register_file_r regFile(.rp(pc), .*);
 
-data_memory #(.size(64)) dm1 (.*);
+data_memory #(.size(64)) dm1 (.clk, .*);
 
 instr_memory #(.size(64)) im (.*);
 

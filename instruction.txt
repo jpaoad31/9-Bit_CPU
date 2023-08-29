@@ -10,17 +10,17 @@ address:	a, b
 math:		x, y
 result:		r, s			// read only
 param:		m, n
-literal:	l
+value:		v
 branch:		z
-pc:			p
+link:		l
 generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 
 32 instructions with 4-bit operand
 
 87654
 0 // register set & move
--0000 litl	{4'b val}				// load 4'b in lower nibble of l
--0001 lith	{4'b val}				// load 4'b in upper nibble of l
+-0000 vall	{4'b val}				// load 4'b in lower nibble of l
+-0001 valh	{4'b val}				// load 4'b in upper nibble of l
 -0010 movc	{4'b reg}				// copy contents of reg to c
 -0011 movd	{4'b reg}				// ↓ note: movc c: c = 8'b00000000
 -0100 movm	{4'b reg}				// ↓
@@ -34,9 +34,9 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 -1010 movi	{4'b reg}				// ↓
 -1011 movj	{4'b reg}				// ↓
 -1100 movk	{4'b reg}				// ↓
--1101 movl	{4'b reg}				// ↓
+-1101 movv	{4'b reg}				// ↓
 -1110 movz	{4'b reg}				// ↓
--1111 movp	{4'b reg}				// set pc to value in reg 
+-1111 jtsr	{4'b val}				// jump to subroutine
 
 10 // data & branch (reg_OP)
 --000 load	{0:a,1:b}	{3'b reg}	// read address a/b into reg (exclude r,s)
@@ -49,7 +49,7 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 --111 bnzr	{4'b reg}				// branch to z if reg != 0
 h
 11 // math & logic
---000 ---							// unused top-level instruction
+--000 ----							// unused top-level instruction
 --001 seth	{4'b val}				// set {n,m} at 4'b to 1
 --010 mthr	{4'b opp}				// do opp and store result in r
 --011 mths	{4'b opp}				// do opp and store result in s
@@ -75,7 +75,7 @@ fun function parameters
 	10 11	
 	11 00	strl					// start_address[7:0] = l[7:0]
 	11 01	strh					// start_address[9:8] = l[1:0]
-	11 10	ndne					// done flag = 0
+	11 10	rfsr					// return from subroutine
 	11 11	done					// done flag = 1
 
 reg Register Values

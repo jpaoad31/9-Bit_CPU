@@ -16,7 +16,7 @@ package instr_pack;
 
 	typedef enum logic[4:0] {
 		non0,	non1,	non2,	non3,
-		lit_lo,	lit_hi,	movEn,	non7,
+		val_lo,	val_hi,	movEn,	non7,
 		non8,	non9,	incrEn,	decrEn,
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
 		no16,	sethEn,	no18,	no19,
@@ -29,8 +29,8 @@ package instr_pack;
 	// Code Pack
 
 	// op codes
-	logic [4:0]	litl = 5'b00000,
-				lith = 5'b00001,
+	logic [4:0]	vall = 5'b00000,
+				valh = 5'b00001,
 				movc = 5'b00010,
 				movd = 5'b00011,
 				movm = 5'b00100,

@@ -10,7 +10,7 @@ module data_memory #(size=256) (
 		if (loadEn) loadData = core[address];
 		else loadData = 8'bz; 
 
-	always_ff @(negedge clk) begin
+	always_ff @(posedge clk) begin
 		if (storEn)
 			core[address] <= storData;
 	end

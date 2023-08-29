@@ -108,13 +108,13 @@ always_comb begin
 		endcase
 	end
 
-	0,1:						// move & literals
-		if (!instr[8:5]) begin		// load literal
+	0,1:						// move & literal values
+		if (!instr[8:5]) begin		// load literal values
 			instr_o = instr[3:0];	// set out register
 			if (instr[4])
-				reg_op = lit_hi;
+				reg_op = val_hi;
 			else
-				reg_op = lit_lo;
+				reg_op = val_lo;
 		end
 
 		else if (instr[7:4] == 4'hf) begin		// jump to subroutine

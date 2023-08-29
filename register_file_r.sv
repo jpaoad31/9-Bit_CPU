@@ -12,11 +12,10 @@ module register_file_r(
 logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rv=13, rz=14;
 logic [9:0] start_address=0, rl=15;
 wire [9:0] subroutine;
-logic [7:0] npc=0, temp=0;
+logic [7:0] temp=0;
 
 logic [7:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
-reg_arithmetic pcALU(.x(rp[7:0]), .v(3'b0), .incr(1'b1), .decr(1'b0), .jizr(1'b0), .jnzr(1'b0), .res(npc));
 
 logic	branch=0, othr=0, mov=0, incr=0, decr=0,
 		bizr=0, bnzr=0, jizr=0, jnzr=0,
@@ -112,6 +111,7 @@ always_comb begin
 		bnzrEn: begin
 			if (temp) branch = 1;
 			end
+		default: branch = 0;
 	endcase
 end
 
@@ -135,137 +135,138 @@ always_latch
 			case (instr_o)
 				4'b1100: start_address[7:0] = rv;
 				4'b1101: start_address[1:0] = rv[1:0];
+				default: start_address = start_address;
 			endcase
 
-always_ff @(negedge clk) begin
+always_ff @(posedge clk) begin
 	if (loadEn)
 		case (reg_dst)
-		regc: rc = loadData;
-		regd: rd = loadData;
-		regm: rm = loadData;
-		regn: rn = loadData;
-		regx: rx = loadData;
-		regy: ry = loadData;
+		regc: rc <= loadData;
+		regd: rd <= loadData;
+		regm: rm <= loadData;
+		regn: rn <= loadData;
+		regx: rx <= loadData;
+		regy: ry <= loadData;
 		endcase
 	else
 	case (reg_op)
-		lit_lo: rv[3:0] = instr_o;
-		lit_hi: rv[7:4] = instr_o;
+		val_lo: rv[3:0] <= instr_o;
+		val_hi: rv[7:4] <= instr_o;
 		movEn: begin
 			case (reg_dst)
-				regc: rc = temp;
-				regd: rd = temp;
-				regm: rm = temp;
-				regn: rn = temp;
-				regx: rx = temp;
-				regy: ry = temp;
-				rega: ra = temp;
-				regb: rb = temp;
-				regi: ri = temp;
-				regj: rj = temp;
-				regk: rk = temp;
-				regv: rv = temp;
-				regz: rz = temp;
+				regc: rc <= temp;
+				regd: rd <= temp;
+				regm: rm <= temp;
+				regn: rn <= temp;
+				regx: rx <= temp;
+				regy: ry <= temp;
+				rega: ra <= temp;
+				regb: rb <= temp;
+				regi: ri <= temp;
+				regj: rj <= temp;
+				regk: rk <= temp;
+				regv: rv <= temp;
+				regz: rz <= temp;
 			endcase
 			end
 		incrEn, decrEn: begin
 			case (reg_dst)
-				regc: rc = res;
-				regd: rd = res;
-				regm: rm = res;
-				regn: rn = res;
-				regx: rx = res;
-				regy: ry = res;
-				rega: ra = res;
-				regb: rb = res;
-				regi: ri = res;
-				regj: rj = res;
-				regk: rk = res;
-				regv: rv = res;
-				regz: rz = res;
+				regc: rc <= res;
+				regd: rd <= res;
+				regm: rm <= res;
+				regn: rn <= res;
+				regx: rx <= res;
+				regy: ry <= res;
+				rega: ra <= res;
+				regb: rb <= res;
+				regi: ri <= res;
+				regj: rj <= res;
+				regk: rk <= res;
+				regv: rv <= res;
+				regz: rz <= res;
 			endcase
 			end
 		sethEn: begin
 			case (instr_o)
-				4'h0: rm[0] = 1'b1;
-				4'h1: rm[1] = 1'b1;
-				4'h2: rm[2] = 1'b1;
-				4'h3: rm[3] = 1'b1;
-				4'h4: rm[4] = 1'b1;
-				4'h5: rm[5] = 1'b1;
-				4'h6: rm[6] = 1'b1;
-				4'h7: rm[7] = 1'b1;
-				4'h8: rn[0] = 1'b1;
-				4'h9: rn[1] = 1'b1;
-				4'ha: rn[2] = 1'b1;
-				4'hb: rn[3] = 1'b1;
-				4'hc: rn[4] = 1'b1;
-				4'hd: rn[5] = 1'b1;
-				4'he: rn[6] = 1'b1;
-				4'hf: rn[7] = 1'b1;
+				4'h0: rm[0] <= 1'b1;
+				4'h1: rm[1] <= 1'b1;
+				4'h2: rm[2] <= 1'b1;
+				4'h3: rm[3] <= 1'b1;
+				4'h4: rm[4] <= 1'b1;
+				4'h5: rm[5] <= 1'b1;
+				4'h6: rm[6] <= 1'b1;
+				4'h7: rm[7] <= 1'b1;
+				4'h8: rn[0] <= 1'b1;
+				4'h9: rn[1] <= 1'b1;
+				4'ha: rn[2] <= 1'b1;
+				4'hb: rn[3] <= 1'b1;
+				4'hc: rn[4] <= 1'b1;
+				4'hd: rn[5] <= 1'b1;
+				4'he: rn[6] <= 1'b1;
+				4'hf: rn[7] <= 1'b1;
 			endcase
 			end
 		lslcEn: begin
 			case (instr_o)
-				4'b0000: rm = rn;
-				4'b0001: rm = {rm[6:0],rn[7]};
-				4'b0010: rm = {rm[5:0],rn[7:6]};
-				4'b0011: rm = {rm[4:0],rn[7:5]};
-				4'b0100: rm = {rm[3:0],rn[7:4]};
-				4'b0101: rm = {rm[2:0],rn[7:3]};
-				4'b0110: rm = {rm[1:0],rn[7:2]};
-				4'b0111: rm = {rm[0]  ,rn[7:1]};
+				4'b0000: rm <= rn;
+				4'b0001: rm <= {rm[6:0],rn[7]};
+				4'b0010: rm <= {rm[5:0],rn[7:6]};
+				4'b0011: rm <= {rm[4:0],rn[7:5]};
+				4'b0100: rm <= {rm[3:0],rn[7:4]};
+				4'b0101: rm <= {rm[2:0],rn[7:3]};
+				4'b0110: rm <= {rm[1:0],rn[7:2]};
+				4'b0111: rm <= {rm[0]  ,rn[7:1]};
 
-				4'b1000: rn = rm;
-				4'b1001: rn = {rn[6:0],rm[7]};
-				4'b1010: rn = {rn[5:0],rm[7:6]};
-				4'b1011: rn = {rn[4:0],rm[7:5]};
-				4'b1100: rn = {rn[3:0],rm[7:4]};
-				4'b1101: rn = {rn[2:0],rm[7:3]};
-				4'b1110: rn = {rn[1:0],rm[7:2]};
-				4'b1111: rn = {rn[0]  ,rm[7:1]};
+				4'b1000: rn <= rm;
+				4'b1001: rn <= {rn[6:0],rm[7]};
+				4'b1010: rn <= {rn[5:0],rm[7:6]};
+				4'b1011: rn <= {rn[4:0],rm[7:5]};
+				4'b1100: rn <= {rn[3:0],rm[7:4]};
+				4'b1101: rn <= {rn[2:0],rm[7:3]};
+				4'b1110: rn <= {rn[1:0],rm[7:2]};
+				4'b1111: rn <= {rn[0]  ,rm[7:1]};
 			endcase
 			end
 		lsrcEn: begin
 			case (instr_o[3:0])
-				4'b0000: rm = rn;
-				4'b0001: rm = {rn[0]  , rm[7:1]};
-				4'b0010: rm = {rn[1:0], rm[7:2]};
-				4'b0011: rm = {rn[2:0], rm[7:3]};
-				4'b0100: rm = {rn[3:0], rm[7:4]};
-				4'b0101: rm = {rn[4:0], rm[7:5]};
-				4'b0110: rm = {rn[5:0], rm[7:6]};
-				4'b0111: rm = {rn[6:0], rm[7]};
+				4'b0000: rm <= rn;
+				4'b0001: rm <= {rn[0]  , rm[7:1]};
+				4'b0010: rm <= {rn[1:0], rm[7:2]};
+				4'b0011: rm <= {rn[2:0], rm[7:3]};
+				4'b0100: rm <= {rn[3:0], rm[7:4]};
+				4'b0101: rm <= {rn[4:0], rm[7:5]};
+				4'b0110: rm <= {rn[5:0], rm[7:6]};
+				4'b0111: rm <= {rn[6:0], rm[7]};
 
-				4'b1000: rn = rm;
-				4'b1001: rn = {rm[0]  , rn[7:1]};
-				4'b1010: rn = {rm[1:0], rn[7:2]};
-				4'b1011: rn = {rm[2:0], rn[7:3]};
-				4'b1100: rn = {rm[3:0], rn[7:4]};
-				4'b1101: rn = {rm[4:0], rn[7:5]};
-				4'b1110: rn = {rm[5:0], rn[7:6]};
-				4'b1111: rn = {rm[6:0], rn[7]};
+				4'b1000: rn <= rm;
+				4'b1001: rn <= {rm[0]  , rn[7:1]};
+				4'b1010: rn <= {rm[1:0], rn[7:2]};
+				4'b1011: rn <= {rm[2:0], rn[7:3]};
+				4'b1100: rn <= {rm[3:0], rn[7:4]};
+				4'b1101: rn <= {rm[4:0], rn[7:5]};
+				4'b1110: rn <= {rm[5:0], rn[7:6]};
+				4'b1111: rn <= {rm[6:0], rn[7]};
 			endcase
 			end
 		flipEn: begin
 			case (instr_o)
-				4'b0000: rm = rm ^ 8'b00000001;
-				4'b0001: rm = rm ^ 8'b00000010;
-				4'b0010: rm = rm ^ 8'b00000100;
-				4'b0011: rm = rm ^ 8'b00001000;
-				4'b0100: rm = rm ^ 8'b00010000;
-				4'b0101: rm = rm ^ 8'b00100000;
-				4'b0110: rm = rm ^ 8'b01000000;
-				4'b0111: rm = rm ^ 8'b10000000;
+				4'b0000: rm <= rm ^ 8'b00000001;
+				4'b0001: rm <= rm ^ 8'b00000010;
+				4'b0010: rm <= rm ^ 8'b00000100;
+				4'b0011: rm <= rm ^ 8'b00001000;
+				4'b0100: rm <= rm ^ 8'b00010000;
+				4'b0101: rm <= rm ^ 8'b00100000;
+				4'b0110: rm <= rm ^ 8'b01000000;
+				4'b0111: rm <= rm ^ 8'b10000000;
 
-				4'b1000: rn = rn ^ 8'b00000001;
-				4'b1001: rn = rn ^ 8'b00000010;
-				4'b1010: rn = rn ^ 8'b00000100;
-				4'b1011: rn = rn ^ 8'b00001000;
-				4'b1100: rn = rn ^ 8'b00010000;
-				4'b1101: rn = rn ^ 8'b00100000;
-				4'b1110: rn = rn ^ 8'b01000000;
-				4'b1111: rn = rn ^ 8'b10000000;
+				4'b1000: rn <= rn ^ 8'b00000001;
+				4'b1001: rn <= rn ^ 8'b00000010;
+				4'b1010: rn <= rn ^ 8'b00000100;
+				4'b1011: rn <= rn ^ 8'b00001000;
+				4'b1100: rn <= rn ^ 8'b00010000;
+				4'b1101: rn <= rn ^ 8'b00100000;
+				4'b1110: rn <= rn ^ 8'b01000000;
+				4'b1111: rn <= rn ^ 8'b10000000;
 			endcase
 			end
 	endcase

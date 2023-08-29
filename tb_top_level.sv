@@ -22,15 +22,15 @@ int pc = 0;
 initial begin
 	cpu.im.core[pc] = {movv, v};
 	pc++;
-	cpu.im.core[pc] = {litl, 4'b1100};
+	cpu.im.core[pc] = {vall, 4'b1100};
 	pc++;
-	cpu.im.core[pc] = {lith, 4'b0011};
+	cpu.im.core[pc] = {valh, 4'b0011};
 	pc++;
 	cpu.im.core[pc] = {movx, v};
 	pc++;
 	cpu.im.core[pc] = {movv, v};
 	pc++;
-	cpu.im.core[pc] = {litl, 4'b0010};
+	cpu.im.core[pc] = {vall, 4'b0010};
 	pc++;
 	cpu.im.core[pc] = {movy, v};
 	pc++;
@@ -58,9 +58,9 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {jizr, ss, 3'b010};	//18 jump pc+4
 	pc++;
-		cpu.im.core[pc] = {litl, 4'b1111};
+		cpu.im.core[pc] = {vall, 4'b1111};
 		pc++;
-		cpu.im.core[pc] = {lith, 4'b1111};
+		cpu.im.core[pc] = {valh, 4'b1111};
 		pc++;
 		cpu.im.core[pc] = {movd, v};
 		pc++;
@@ -82,15 +82,15 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {incr, a};
 	pc++;
-	cpu.im.core[pc] = {lith, 4'b1010};
+	cpu.im.core[pc] = {valh, 4'b1010};
 	pc++;
-	cpu.im.core[pc] = {litl, 4'b0000};
+	cpu.im.core[pc] = {vall, 4'b0000};
 	pc++;
 	cpu.im.core[pc] = {movm, v};
 	pc++;
-	cpu.im.core[pc] = {lith, 4'b0000};
+	cpu.im.core[pc] = {valh, 4'b0000};
 	pc++;
-	cpu.im.core[pc] = {litl, 4'b1111};
+	cpu.im.core[pc] = {vall, 4'b1111};
 	pc++;
 	cpu.im.core[pc] = {movn, v};
 	pc++;
@@ -104,8 +104,3 @@ initial begin
 end
 
 endmodule
-
-/* Instructions tested
-	litl
-	- 
-*/

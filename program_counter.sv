@@ -37,8 +37,8 @@ always_ff @(posedge clk) begin
 		else if (lj3) begin
 				rp <= {2'b11, rz};
 		end
-		
-		else	rp[7:0] = npc;
+
+		else	rp[7:0] <= npc;
 	end
 	else rp = start_address;
 end
