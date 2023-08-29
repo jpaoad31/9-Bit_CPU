@@ -14,7 +14,7 @@ logic [9:0] start_address=0, rl=15;
 wire [9:0] subroutine;
 logic [7:0] temp=0;
 
-logic [7:0] mx=0, res=0;
+logic [9:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
 
 logic	branch=0, othr=0, mov=0, incr=0, decr=0,
@@ -80,29 +80,29 @@ always_comb begin
 	branch = 0;
 	if (incr||decr||mov||bizr||bnzr) begin
 		case (reg_src)
-			regr: temp = rr;
-			regs: temp = rs;
-			regc: temp = rc;
-			regd: temp = rd;
-			regm: temp = rm;
-			regn: temp = rn;
-			regx: temp = rx;
-			regy: temp = ry;
-			rega: temp = ra;
-			regb: temp = rb;
-			regi: temp = ri;
-			regj: temp = rj;
-			regk: temp = rk;
-			regv: temp = rv;
-			regz: temp = rz;
-			regl: temp = rl[7:0];
-			default: temp = 8'b0;
+			regr: temp = {2'b0, rr};
+			regs: temp = {2'b0, rs};
+			regc: temp = {2'b0, rc};
+			regd: temp = {2'b0, rd};
+			regm: temp = {2'b0, rm};
+			regn: temp = {2'b0, rn};
+			regx: temp = {2'b0, rx};
+			regy: temp = {2'b0, ry};
+			rega: temp = {2'b0, ra};
+			regb: temp = {2'b0, rb};
+			regi: temp = {2'b0, ri};
+			regj: temp = {2'b0, rj};
+			regk: temp = {2'b0, rk};
+			regv: temp = {2'b0, rv};
+			regz: temp = {2'b0, rz};
+			regl: temp = rl;
+			default: temp = 10'b0;
 		endcase
-		if (eql && mov) temp = 8'b0;
+		if (eql && mov) temp = 10'b0;
 	end else if (jizr||jnzr) begin
-		temp = rp[7:0]; 
+		temp = rp; 
 	end else begin
-		temp = 8'b0;
+		temp = 10'b0;
 	end
 	mx = temp;
 	case (reg_op)
@@ -163,38 +163,38 @@ always_ff @(posedge clk) begin
 		val_hi: rv[7:4] <= instr_o;
 		movEn: begin
 			case (reg_dst)
-				regc: rc <= temp;
-				regd: rd <= temp;
-				regm: rm <= temp;
-				regn: rn <= temp;
-				regx: rx <= temp;
-				regy: ry <= temp;
-				rega: ra <= temp;
-				regb: rb <= temp;
-				regi: ri <= temp;
-				regj: rj <= temp;
-				regk: rk <= temp;
-				regv: rv <= temp;
-				regz: rz <= temp;
-				regl: rl[7:0] <= temp;
+				regc: rc <= temp[7:0];
+				regd: rd <= temp[7:0];
+				regm: rm <= temp[7:0];
+				regn: rn <= temp[7:0];
+				regx: rx <= temp[7:0];
+				regy: ry <= temp[7:0];
+				rega: ra <= temp[7:0];
+				regb: rb <= temp[7:0];
+				regi: ri <= temp[7:0];
+				regj: rj <= temp[7:0];
+				regk: rk <= temp[7:0];
+				regv: rv <= temp[7:0];
+				regz: rz <= temp[7:0];
+				regl: rl[7:0] <= temp[7:0];
 			endcase
 			end
 		incrEn, decrEn: begin
 			case (reg_dst)
-				regc: rc <= res;
-				regd: rd <= res;
-				regm: rm <= res;
-				regn: rn <= res;
-				regx: rx <= res;
-				regy: ry <= res;
-				rega: ra <= res;
-				regb: rb <= res;
-				regi: ri <= res;
-				regj: rj <= res;
-				regk: rk <= res;
-				regv: rv <= res;
-				regz: rz <= res;
-				regl: rl[7:0] <= res;
+				regc: rc <= res[7:0];
+				regd: rd <= res[7:0];
+				regm: rm <= res[7:0];
+				regn: rn <= res[7:0];
+				regx: rx <= res[7:0];
+				regy: ry <= res[7:0];
+				rega: ra <= res[7:0];
+				regb: rb <= res[7:0];
+				regi: ri <= res[7:0];
+				regj: rj <= res[7:0];
+				regk: rk <= res[7:0];
+				regv: rv <= res[7:0];
+				regz: rz <= res[7:0];
+				regl: rl <= res;
 			endcase
 			end
 		sethEn: begin
