@@ -1,7 +1,7 @@
 import instr_pack ::*;
 
 module register_file_r(
-	input clk, start, alu_en, loadEn, storEn, jump2sub,
+	input clk, start, alu_en, loadEn, storEn,
 	input reg_OP reg_op,
 	input register reg_src, reg_dst, 
 	input [3:0] instr_o,
@@ -19,7 +19,8 @@ reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
 
 logic	branch=0, othr=0, mov=0, incr=0, decr=0,
 		bizr=0, bnzr=0, jizr=0, jnzr=0,
-		lj0=0, lj1=0, lj2=0, lj3=0;
+		lj0=0, lj1=0, lj2=0, lj3=0,
+		jump2sub=0, retFsub=0;
 
 logic eql;
 
@@ -31,6 +32,10 @@ assign eql = (reg_src == reg_dst);
 
 // register operation flags
 always_comb begin
+
+	jump2sub=0;
+	retFsub	=0;
+
 	mov		=0;
 	incr	=0;
 	decr	=0;
@@ -40,14 +45,18 @@ always_comb begin
 	bizr	=0;
 	bnzr	=0;
 
-	lj0	=0;
-	lj1	=0;
-	lj2	=0;
-	lj3	=0;
+	lj0		=0;
+	lj1		=0;
+	lj2		=0;
+	lj3		=0;
 
 	othr	=0;
 
 	case (reg_op)
+
+		j2sr:	jump2sub=1;
+		rFsr:	retFsub	=1;
+
 		movEn:	mov		= 1;
 		incrEn:	incr	= 1;
 		decrEn:	decr	= 1;
@@ -167,6 +176,7 @@ always_ff @(posedge clk) begin
 				regk: rk <= temp;
 				regv: rv <= temp;
 				regz: rz <= temp;
+				regl: rl[7:0] <= temp;
 			endcase
 			end
 		incrEn, decrEn: begin
@@ -184,6 +194,7 @@ always_ff @(posedge clk) begin
 				regk: rk <= res;
 				regv: rv <= res;
 				regz: rz <= res;
+				regl: rl[7:0] <= res;
 			endcase
 			end
 		sethEn: begin

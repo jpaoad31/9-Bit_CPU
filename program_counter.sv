@@ -1,8 +1,8 @@
 module program_counter(
-input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub,
+input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub, retFsub,
 		branch, lj0, lj1, lj2, lj3,
 input [7:0] rz, res,
-input [9:0] start_address, subroutine,
+input [9:0] start_address, subroutine, rl,
 output logic [9:0] rp
 );
 
@@ -20,6 +20,10 @@ always_ff @(posedge clk) begin
 
 		else if (jump2sub) begin
 			rp <= subroutine;
+		end
+
+		else if (retFsub) begin
+			rp <= rl;
 		end
 
 		else if (lj0) begin

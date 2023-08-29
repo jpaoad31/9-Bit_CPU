@@ -15,7 +15,7 @@ package instr_pack;
 	} math;
 
 	typedef enum logic[4:0] {
-		non0,	non1,	non2,	non3,
+		j2sr,	rFsr,	non2,	non3,
 		val_lo,	val_hi,	movEn,	non7,
 		non8,	non9,	incrEn,	decrEn,
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
@@ -45,7 +45,7 @@ package instr_pack;
 				movk = 5'b01100,
 				movv = 5'b01101,
 				movz = 5'b01110,
-				jtsr = 5'b01111,
+				movl = 5'b01111,
 
 				load = 5'b10000,
 				stor = 5'b10001,
@@ -56,7 +56,7 @@ package instr_pack;
 				bizr = 5'b10110,
 				bnzr = 5'b10111,
 
-			//	jtsr = 5'b11000,
+				jtsr = 5'b11000,
 				seth = 5'b11001,
 				mthr = 5'b11010,
 				mths = 5'b11011,

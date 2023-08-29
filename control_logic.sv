@@ -4,7 +4,7 @@ module control_logic (
 	input [8:0] instr,
 	input start,
 
-	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, jump2sub=0, loadEn=0, storEn=0,
+	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, loadEn=0, storEn=0,
 	output register reg_src=no_reg, reg_dst=no_reg,
 	output math math_op=no_mth,
 	output reg_OP reg_op=no_rop,
@@ -16,7 +16,6 @@ always_comb begin
 	instr_o = instr[3:0];
 	mem_sel = 1'bz;
 	done = 0;
-	jump2sub = 0;
 	loadEn = 0;
 	storEn = 0;
 	alu_rs = 1'bz;
@@ -73,7 +72,8 @@ always_comb begin
 		case (instr[6:5])
 			
 		0: begin					// seth (& unused operation)
-			reg_op = sethEn;
+			if (!instr[4]) reg_op = j2sr;
+			else reg_op = sethEn;
 		end
 
 		1: begin					// alu math
@@ -101,6 +101,7 @@ always_comb begin
 
 				12: reg_op = funcEn;
 				13: reg_op = funcEn;
+				14: reg_op = rFsr;
 				default: done = 1;
 
 				endcase
@@ -115,10 +116,6 @@ always_comb begin
 				reg_op = val_hi;
 			else
 				reg_op = val_lo;
-		end
-
-		else if (instr[7:4] == 4'hf) begin		// jump to subroutine
-			jump2sub = 1;
 		end
 
 		else begin				// move operation

@@ -36,7 +36,7 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 -1100 movk	{4'b reg}				// ↓
 -1101 movv	{4'b reg}				// ↓
 -1110 movz	{4'b reg}				// ↓
--1111 jtsr	{4'b val}				// jump to subroutine
+-1111 movl	{4'b reg}				// jump to subroutine
 
 10 // data & branch (reg_OP)
 --000 load	{0:a,1:b}	{3'b reg}	// read address a/b into reg (exclude r,s)
@@ -49,7 +49,7 @@ generic:	c, d, i, j, k	// might as well have 16 because 4-bit addressing
 --111 bnzr	{4'b reg}				// branch to z if reg != 0
 h
 11 // math & logic
---000 ----							// unused top-level instruction
+--000 jtsr							// jump to subroutine
 --001 seth	{4'b val}				// set {n,m} at 4'b to 1
 --010 mthr	{4'b opp}				// do opp and store result in r
 --011 mths	{4'b opp}				// do opp and store result in s
