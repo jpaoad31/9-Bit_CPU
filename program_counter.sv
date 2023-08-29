@@ -3,7 +3,7 @@ input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub, retFsub,
 		branch, lj0, lj1, lj2, lj3,
 input [7:0] rz,
 input [9:0] start_address, subroutine, rl, res,
-output logic [9:0] rp
+output logic [9:0] rp=10'b0000000000
 );
 
 wire [9:0] npc;
@@ -14,7 +14,7 @@ always_ff @(posedge clk) begin
 	if (!start) begin
 
 		if (branch) begin
-			if (jizr||jnzr)			rp[7:0] <= res;
+			if (jizr||jnzr)			rp <= res;
 			else if (bizr||bnzr)	rp[7:0] <= rz;
 		end
 
@@ -42,7 +42,7 @@ always_ff @(posedge clk) begin
 				rp <= {2'b11, rz};
 		end
 
-		else	rp[7:0] <= npc;
+		else	rp <= npc;
 	end
 	else rp = start_address;
 end

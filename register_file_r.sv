@@ -12,7 +12,7 @@ module register_file_r(
 logic [7:0] rc=2, rd=3, rn=5, ri=10, rj=11, rk=12, rv=13, rz=14;
 logic [9:0] start_address=0, rl=15;
 wire [9:0] subroutine;
-logic [7:0] temp=0;
+logic [9:0] temp=0;
 
 logic [9:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
