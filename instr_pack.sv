@@ -112,8 +112,8 @@ package instr_pack;
 
 				srtl = 4'b1100,
 				strh = 4'b1101,
-
-				dne = 4'b1111;
+				rfsr = 4'b1110,
+				done = 4'b1111;
 
 	// register selection
 	logic		sr = 1'b0,

@@ -37,6 +37,6 @@ register_file_r regFile(.rp(pc), .*);
 
 data_memory #(.size(64)) dm1 (.clk, .*);
 
-instr_memory #(.size(64)) im (.*);
+instr_memory #(.size(256)) im (.*);
 
 endmodule

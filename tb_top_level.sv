@@ -100,7 +100,7 @@ initial begin
 	pc++;
 	cpu.im.core[pc] = {incr, a};			//38 : mem[4] = 8'b11111010 = {n[3:0],m[7:4]}
 	pc++;
-	cpu.im.core[pc] = {func, dne};
+	cpu.im.core[pc] = {func, done};
 end
 
 endmodule

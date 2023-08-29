@@ -4,11 +4,13 @@ module control_logic (
 	input [8:0] instr,
 	input start,
 
-	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, loadEn=0, storEn=0, noop=0;
+	output logic mem_sel=1'bz, alu_rs=1'bz, done=0, alu_en=0, loadEn=0, storEn=0,
 	output register reg_src=no_reg, reg_dst=no_reg,
 	output math math_op=no_mth,
 	output reg_OP reg_op=no_rop,
 	output logic [3:0] instr_o);
+
+logic noop=0;
 
 always_comb begin
 	math_op = no_mth;

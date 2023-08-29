@@ -56,7 +56,7 @@ initial begin
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {vall, 4'b0100}; pc++;
 		core[pc] = {valh, 4'b0000}; pc++;
-		core[pc] = {moy, v}; pc++;					// y= 0000_0100
+		core[pc] = {movy, v}; pc++;					// y= 0000_0100
 		core[pc] = {mthr, ror}; pc++;				// r= {000,p4,0000}
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {movy, c}; pc++;					// {000,p4,0000} | {b4, b3, b2, 0, b1, 000}
@@ -68,7 +68,7 @@ initial begin
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {vall, 4'b0110}; pc++;
 		core[pc] = {valh, 4'b0000}; pc++;
-		core[pc] = {moy, v}; pc++;					// y= 0000_0110
+		core[pc] = {movy, v}; pc++;					// y= 0000_0110
 		core[pc] = {mthr, ror}; pc++;				// r= {0000_0,p2,00}
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {movy, c}; pc++;					// {0000_0,p2,00} | {b4,b3,b2,p4,b1,000}
@@ -80,7 +80,7 @@ initial begin
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {vall, 4'b0111}; pc++;
 		core[pc] = {valh, 4'b0000}; pc++;
-		core[pc] = {moy, v}; pc++;					// y= 0000_0111
+		core[pc] = {movy, v}; pc++;					// y= 0000_0111
 		core[pc] = {mthr, ror}; pc++;				// r= {0000_00,p1,0}
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {movy, c}; pc++;					// {0000_00,p1,0} | {b4,b3,b2,p4,b1,p2,00}
@@ -100,28 +100,26 @@ initial begin
 /*comp*/core[pc] = {bnzr, a}; pc++;					// if a!=0, go to line 9.
 		core[pc] = {func, done}; pc++;
 		core[pc] = {func, noop}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-		core[pc] = {}; pc++;
-/*sub0*/core[pc] = {movx, v}; pc++;			// 100 subroutine calculate parity using bitmask in v, store parity in r, s not preserved
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+		core[pc] = {func, noop}; pc++;
+/*sub0*/core[pc] = {movx, v}; pc++;					// 100 subroutine calculate parity using bitmask in v, store parity in r, s not preserved
 		core[pc] = {movy, c}; pc++;
-		core[pc] = {mthr, amp}; pc++;		// mask c
+		core[pc] = {mthr, amp}; pc++;				// mask c
 		core[pc] = {movy, d}; pc++;
-		core[pc] = {mths, amp}; pc++;		// mask d
+		core[pc] = {mths, amp}; pc++;				// mask d
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {movy, s}; pc++;
-		core[pc] = {mthr, parx}; pc++;		// calculate byte parity
+		core[pc] = {mthr, parx}; pc++;				// calculate byte parity
 		core[pc] = {mths, pary}; pc++;
 		core[pc] = {movx, r}; pc++;
 		core[pc] = {movy, s}; pc++;
-		core[pc] = {mthr, eor}; pc++;		// calculate total parity
+		core[pc] = {mthr, eor}; pc++;				// calculate total parity
 		core[pc] = {func, rfsr}; pc++;
-	
-	
 end
 
 endmodule
