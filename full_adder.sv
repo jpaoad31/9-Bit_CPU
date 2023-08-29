@@ -8,8 +8,8 @@ module full_adder (
 			co = x&y|(ci&(x|y));
 		end
 		else begin
-			s = 1'bz;
-			co = 1'bz;
+			s = 1'b0;
+			co = 1'b0;
 		end
 	end
 

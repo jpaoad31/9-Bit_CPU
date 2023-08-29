@@ -10,7 +10,7 @@ module arithmetic_logic(
 	//output logic carry, zero, shift_out, equal
 
 logic [7:0] yp, ny, res;
-wire [7:0] c, cs, s;
+wire [7:0] c, cs, s, ss;
 logic subEn=0;
 
 assign ny = ~y;
@@ -26,7 +26,7 @@ end
 
 always_comb begin
 	subEn = 0;
-	yp = 8'bz;
+	yp = 8'b0;
 	res = 8'b0;
 
 	if (alu_en) begin
@@ -89,24 +89,24 @@ always_comb begin
 end
 
 // add block
-full_adder fa0(.x(x[0]), .y(yp[0]), .ci(1'b0), .s(s[0]), .co(c[0]), .en(1'b1));
-full_adder fa1(.x(x[1]), .y(yp[1]), .ci(c[0]), .s(s[1]), .co(c[1]), .en(1'b1));
-full_adder fa2(.x(x[2]), .y(yp[2]), .ci(c[1]), .s(s[2]), .co(c[2]), .en(1'b1));
-full_adder fa3(.x(x[3]), .y(yp[3]), .ci(c[2]), .s(s[3]), .co(c[3]), .en(1'b1));
-full_adder fa4(.x(x[4]), .y(yp[4]), .ci(c[3]), .s(s[4]), .co(c[4]), .en(1'b1));
-full_adder fa5(.x(x[5]), .y(yp[5]), .ci(c[4]), .s(s[5]), .co(c[5]), .en(1'b1));
-full_adder fa6(.x(x[6]), .y(yp[6]), .ci(c[5]), .s(s[6]), .co(c[6]), .en(1'b1));
-full_adder fa7(.x(x[7]), .y(yp[7]), .ci(c[6]), .s(s[7]), .co(c[7]), .en(1'b1));
+full_adder fa0(.x(x[0]), .y(yp[0]||ss[0]), .ci(1'b0), .s(s[0]), .co(c[0]), .en(1'b1));
+full_adder fa1(.x(x[1]), .y(yp[1]||ss[1]), .ci(c[0]), .s(s[1]), .co(c[1]), .en(1'b1));
+full_adder fa2(.x(x[2]), .y(yp[2]||ss[2]), .ci(c[1]), .s(s[2]), .co(c[2]), .en(1'b1));
+full_adder fa3(.x(x[3]), .y(yp[3]||ss[3]), .ci(c[2]), .s(s[3]), .co(c[3]), .en(1'b1));
+full_adder fa4(.x(x[4]), .y(yp[4]||ss[4]), .ci(c[3]), .s(s[4]), .co(c[4]), .en(1'b1));
+full_adder fa5(.x(x[5]), .y(yp[5]||ss[5]), .ci(c[4]), .s(s[5]), .co(c[5]), .en(1'b1));
+full_adder fa6(.x(x[6]), .y(yp[6]||ss[6]), .ci(c[5]), .s(s[6]), .co(c[6]), .en(1'b1));
+full_adder fa7(.x(x[7]), .y(yp[7]||ss[7]), .ci(c[6]), .s(s[7]), .co(c[7]), .en(1'b1));
 
 // sub pre processing
-full_adder sa0(.x(1'b1), .y(ny[0]), .ci(1'b0 ), .s(yp[0]), .co(cs[0]), .en(subEn));
-full_adder sa1(.x(1'b0), .y(ny[1]), .ci(cs[0]), .s(yp[1]), .co(cs[1]), .en(subEn));
-full_adder sa2(.x(1'b0), .y(ny[2]), .ci(cs[1]), .s(yp[2]), .co(cs[2]), .en(subEn));
-full_adder sa3(.x(1'b0), .y(ny[3]), .ci(cs[2]), .s(yp[3]), .co(cs[3]), .en(subEn));
-full_adder sa4(.x(1'b0), .y(ny[4]), .ci(cs[3]), .s(yp[4]), .co(cs[4]), .en(subEn));
-full_adder sa5(.x(1'b0), .y(ny[5]), .ci(cs[4]), .s(yp[5]), .co(cs[5]), .en(subEn));
-full_adder sa6(.x(1'b0), .y(ny[6]), .ci(cs[5]), .s(yp[6]), .co(cs[6]), .en(subEn));
-full_adder sa7(.x(1'b0), .y(ny[7]), .ci(cs[6]), .s(yp[7]), .co(cs[7]), .en(subEn));
+full_adder sa0(.x(1'b1), .y(ny[0]), .ci(1'b0 ), .s(ss[0]), .co(cs[0]), .en(subEn));
+full_adder sa1(.x(1'b0), .y(ny[1]), .ci(cs[0]), .s(ss[1]), .co(cs[1]), .en(subEn));
+full_adder sa2(.x(1'b0), .y(ny[2]), .ci(cs[1]), .s(ss[2]), .co(cs[2]), .en(subEn));
+full_adder sa3(.x(1'b0), .y(ny[3]), .ci(cs[2]), .s(ss[3]), .co(cs[3]), .en(subEn));
+full_adder sa4(.x(1'b0), .y(ny[4]), .ci(cs[3]), .s(ss[4]), .co(cs[4]), .en(subEn));
+full_adder sa5(.x(1'b0), .y(ny[5]), .ci(cs[4]), .s(ss[5]), .co(cs[5]), .en(subEn));
+full_adder sa6(.x(1'b0), .y(ny[6]), .ci(cs[5]), .s(ss[6]), .co(cs[6]), .en(subEn));
+full_adder sa7(.x(1'b0), .y(ny[7]), .ci(cs[6]), .s(ss[7]), .co(cs[7]), .en(subEn));
 
 
 endmodule
