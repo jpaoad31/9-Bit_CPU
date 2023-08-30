@@ -17,7 +17,7 @@ logic[  7:0] mat_str[32];      // message string parsed into bytes
 
 // your device goes here
 // explicitly list ports if your names differ from test bench's
-top_level DUT(.clk, start(req),.ack(done));	               // replace "proc" with the name of your top level module
+top_level DUT(.clk, .start, .done);	               // replace "proc" with the name of your top level module
 
 initial begin
 // program 3
@@ -49,7 +49,7 @@ initial begin
   end        	    
   #10ns start   = 1'b1;      // pulse request to DUT
   #10ns start   = 1'b0;
-  wait(ack);               // wait for ack from DUT
+  wait(done);               // wait for ack from DUT
   $display();
   $display("start program 3");
   $display();
