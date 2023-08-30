@@ -17,7 +17,7 @@ logic [9:0] temp=0;
 logic [9:0] mx=0, res=0;
 reg_arithmetic rALU(.x(mx), .v(instr_o[2:0]), .*);
 
-logic	branch=0, othr=0, mov=0, incr=0, decr=0,
+logic	branch=0, othr=0, mov=0, incr=0, decr=0, flip=0,
 		bizr=0, bnzr=0, jizr=0, jnzr=0,
 		lj0=0, lj1=0, lj2=0, lj3=0,
 		jump2sub=0, retFsub=0;
@@ -39,6 +39,7 @@ always_comb begin
 	mov		=0;
 	incr	=0;
 	decr	=0;
+	flip	=0;
 
 	jizr	=0;
 	jnzr	=0;
@@ -60,16 +61,17 @@ always_comb begin
 		movEn:	mov		= 1;
 		incrEn:	incr	= 1;
 		decrEn:	decr	= 1;
+		flipEn:	flip	= 1;
 
 		jizrEn: jizr	= 1;
 		jnzrEn: jnzr	= 1;
 		bizrEn: bizr	= 1;
 		bnzrEn: bnzr	= 1;
 
-		ljp0: lj0	= 1;
-		ljp1: lj1	= 1;
-		ljp2: lj2	= 1;
-		ljp3: lj3	= 1;
+		ljp0: lj0		= 1;
+		ljp1: lj1		= 1;
+		ljp2: lj2		= 1;
+		ljp3: lj3		= 1;
 
 		default: othr = 1;
 	endcase
@@ -78,7 +80,7 @@ end
 // branch checking
 always_comb begin
 	branch = 0;
-	if (incr||decr||mov||bizr||bnzr) begin
+	if (incr||decr||mov||bizr||bnzr||flip) begin
 		case (reg_src)
 			regr: temp = {2'b0, rr};
 			regs: temp = {2'b0, rs};
@@ -262,7 +264,7 @@ always_ff @(posedge clk) begin
 			endcase
 			end
 		flipEn: begin
-			case (instr_o)
+			case (temp[3:0])
 				4'b0000: rm <= rm ^ 8'b00000001;
 				4'b0001: rm <= rm ^ 8'b00000010;
 				4'b0010: rm <= rm ^ 8'b00000100;

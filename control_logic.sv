@@ -74,7 +74,7 @@ always_comb begin
 	3: begin						// math & logic
 		case (instr[6:5])
 			
-		0: begin					// seth (& unused operation)
+		0: begin					// seth & jtsr
 			if (!instr[4]) reg_op = j2sr;
 			else reg_op = sethEn;
 		end
@@ -89,12 +89,14 @@ always_comb begin
 			if (!instr[4])			// lslc
 				reg_op = lslcEn;
 			else					// lsrc
-				reg_op = lslcEn;
+				reg_op = lsrcEn;
 		end
 
 		default: begin
-			if (!instr[4])			// flip
+			if (!instr[4])begin		// flip
 				reg_op = flipEn;
+				$cast(reg_src, {instr[3:0]});
+			end
 			else				// func
 				case (instr[3:0])
 				0: reg_op = ljp0;
