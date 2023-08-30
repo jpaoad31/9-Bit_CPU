@@ -3,9 +3,9 @@ module subroutine_LUT(input [3:0] instr_o, output logic [9:0] subroutine);
 always_comb begin
 	case (instr_o)
 	0 : subroutine = 10'd100;
+	1 :	subroutine = 10'd60;
+	2 :	subroutine = 10'd70;
 	/*
-	1 :
-	2 :
 	3 :
 	4 :
 	5 :
