@@ -75,7 +75,7 @@ always_comb begin
 				res = s;
 			end
 			EQL8: res = (x == y);			// eql8
-			EQL5: res = (x[4:0] == y[4:0]);	// eql5
+			EQL5: res = (x[7:3] == m[7:3]);	// eql5
 
 			// parity and reverse
 			REVx: res = {x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7]};

@@ -22,12 +22,12 @@ top_level DUT(.clk, .start, .done);	               // replace "proc" with the na
 initial begin
 // program 3
 // pattern we are looking for; experiment w/ various values
-  pat = 5'b0000;//5'b10101;//$random;//5'b11111;
+  pat = $random;//5'b11111;
   str2 = 0;
   DUT.dm1.core[32] = {pat,3'b0};
   for(int i=0; i<32; i++) begin
 // search field; experiment w/ various vales
-    mat_str[i] = 8'b00000000;//8'b01010101;// $random;// 8'b11111111;
+    mat_str[i] = $random;// 8'b11111111;
 	DUT.dm1.core[i] = mat_str[i];   
 	str2 = (str2<<8)+mat_str[i];
   end

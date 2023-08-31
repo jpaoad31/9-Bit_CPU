@@ -110,11 +110,11 @@ always_comb begin
 	case (reg_op)
 		jizrEn: begin
 			if (!instr_o[3] && !rr) branch = 1;
-			else if (!rs) branch = 1;
+			else if (instr_o[3] && !rs) branch = 1;
 			end
 		jnzrEn: begin
 			if (!instr_o[3] && rr) branch = 1;
-			else if (rs) branch = 1;
+			else if (instr_o[3] && rs) branch = 1;
 			end
 		bizrEn: begin
 			if (!temp) branch = 1;
