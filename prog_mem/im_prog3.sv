@@ -5,7 +5,7 @@ module instr_memory #(size=1024) (
 int q=0, fi;
 logic [8:0] core[size];
 assign instr = core[pc];
-// program 2
+// program 3
 initial begin
 /*init*/core[q] = {vall, 4'b1111}; q++;
 		core[q] = {valh, 4'b0000}; q++;
