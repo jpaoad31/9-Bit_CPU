@@ -19,7 +19,7 @@ package instr_pack;
 		val_lo,	val_hi,	movEn,	non7,
 		non8,	non9,	incrEn,	decrEn,
 		jizrEn,	jnzrEn,	bizrEn,	bnzrEn,
-		no16,	sethEn,	no18,	no19,
+		no16,	no17,	no18,	no19,
 		lslcEn,	lsrcEn,	flipEn,	funcEn,
 		ljp0,	ljp1,	ljp2,	ljp3,
 		no_rop = 5'bz
@@ -29,7 +29,8 @@ package instr_pack;
 	// Code Pack
 
 	// op codes
-	logic [4:0]	vall = 5'b00000,
+	const bit [4:0]
+				vall = 5'b00000,
 				valh = 5'b00001,
 				movc = 5'b00010,
 				movd = 5'b00011,
@@ -57,7 +58,7 @@ package instr_pack;
 				bnzr = 5'b10111,
 
 				jtsr = 5'b11000,
-				seth = 5'b11001,
+				//---- = 5'b11001,
 				mthr = 5'b11010,
 				mths = 5'b11011,
 				lslc = 5'b11100,
@@ -66,7 +67,8 @@ package instr_pack;
 				func = 5'b11111;
 	
 	// registers
-	logic [3:0] r = 4'b0000,
+	const bit [3:0]
+				r = 4'b0000,
 				s = 4'b0001,
 				c = 4'b0010,
 				d = 4'b0011,
@@ -116,7 +118,7 @@ package instr_pack;
 				done = 4'b1111;
 
 	// register selection
-	logic		sr = 1'b0,
+	const bit	sr = 1'b0,
 				ss = 1'b1,
 				sm = 1'b0,
 				sn = 1'b1,

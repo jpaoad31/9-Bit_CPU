@@ -84,9 +84,9 @@ initial begin
 		core[q] = {lslc, sn, 3'b001}; q++;	// shift in next bit
 		core[q] = {func, rfsr}; q++;
 
-		fi = $fopen("p3mc.txt","w");
+		fi = $fopen("prog3_machine.txt","w");
 
-		for (int i = 0; i <= q; i++) begin
+		for (int i = 0; i < q; i++) begin
 			$fdisplay(fi,"%b",core[i]);
 		end
 

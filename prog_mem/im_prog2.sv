@@ -121,9 +121,9 @@ initial begin
 		core[q] = {mthr, eor}; q++;					// r= parity {d,c}-mask
 		core[q] = {func, rfsr}; q++;
 		
-		fi = $fopen("p2mc.txt","w");
+		fi = $fopen("prog2_machine.txt","w");
 
-		for (int i = 0; i <= q; i++) begin
+		for (int i = 0; i < q; i++) begin
 			$fdisplay(fi,"%b",core[i]);
 		end
 

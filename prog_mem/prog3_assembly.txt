@@ -1,0 +1,76 @@
+/*init*/vall, 4'b1111
+		valh, 4'b0000
+		movz, v				// branch target 15
+		vall, 4'b0000
+		valh, 4'b0010
+		movc, c				// c: occurences in byte
+		movd, d				// d: occurences across byte
+		movk, k				// k: bytes containing occurence
+		movb, v				// b= 32 (count down)
+		mova, a				// a= 0 (count up)
+		load, sb, x[2:0]	// x= pattern
+		load, sa, m[2:0]	// m= bit sequence 01234567
+		incr, a
+		decr, b
+		func, noop
+/*load*/movj, j				// j: occurred in byte
+		load, sa, n[2:0]	// n= bit sequence 89abcdef
+		incr, a
+		decr, b
+/*cmp*/	jtsr, 4'd1
+		jtsr, 4'd1
+		jtsr, 4'd1
+		jtsr, 4'd1
+		jtsr, 4'd2
+		jtsr, 4'd2
+		jtsr, 4'd2
+		jtsr, 4'd2
+		movy, j
+		mths, revy			// y = j[0:7]
+		jizr, ss, 3'b001
+			incr, k
+/*comp*/bnzr, b
+/*last*/movj, j
+		movn, n
+		jtsr, 4'd1
+		jtsr, 4'd1
+		jtsr, 4'd1
+		jtsr, 4'd1
+		movy, j
+		mths, revy			// y = j[0:7]
+		jizr, ss, 3'b001
+			incr, k
+/*stor*/incr, v				// v= 33
+		movb, v				// v => b
+		stor, sb, c[2:0]	// mem[33] <= c
+		incr, b
+		movm, k
+		stor, sb, m[2:0]	// mem[34] <= m <= k
+		incr, b
+		movx, c
+		movy, d
+		mthr, add			// r= c + d
+		stor, sb, r[2:0]	// mem[35] <= c + d
+		func, done
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+/*sub1*/mthr, eql5			// check for in-byte occurrence
+		jizr, sr, 3'b010
+			incr, c
+			incr, j
+			func, noop
+		lslc, sm, 3'b001
+		lslc, sn, 3'b001	// shift in next bit
+		func, rfsr
+		func, noop
+		func, noop
+/*sub2*/mthr, eql5			// check for across-byte occurrence
+		jizr, sr, 3'b001
+			incr, d
+		lslc, sm, 3'b001
+		lslc, sn, 3'b001	// shift in next bit
+		func, rfsr

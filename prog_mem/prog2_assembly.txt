@@ -1,0 +1,113 @@
+/*init*/vall, 4'b1110
+		valh, 4'b0001
+		mova, v					// a= 30 (decr > load)
+		vall, 4'b1100
+		valh, 4'b0011
+		movb, v					// b= 60 (decr > stor)
+		vall, 4'b1001
+		valh, 4'b0000
+		movz, v					// z= 8'b00001001 = 9 (branch target)
+		decr, b
+		load, sb, d[2:0]
+		decr, b
+		load, sb, c[2:0]		// {d,c}= data
+		movm, m					// m= 00000000 (will hold parity bits)
+		movn, n					// n= 00000000
+/*p8*/	movx, d
+		mthr, parx
+		movn, r
+		lsrc, sm, 3'b001		// m= {p8,000_0000}
+/*p4*/	vall, 4'b0000
+		valh, 4'b1111			// mask = 11110000
+		jtsr, 4'd0				// r= {0000_000,p4}
+		movn, r
+		lsrc, sm, 3'b001		// m= {p4,p8,00_0000}
+/*p2*/	vall, 4'b1100
+		valh, 4'b1100			// mask = 11001100
+		jtsr, 4'd0				// r= {0000_000,p2}
+		movn, r
+		lsrc, sm, 3'b001		// m= {p2,p4,p8,0_0000}
+/*p1*/	vall, 4'b1010
+		valh, 4'b1010			// mask = 10101010
+		jtsr, 4'd0				// r= {0000_000,p1}
+		movn, r
+		lsrc, sm, 3'b001		// m= {p1,p2,p4,p8,0000}
+/*p0*/	vall, 4'b1111
+		valh, 4'b1111			// mask = 11111111
+		jtsr, 4'd0				// r= {0000_000,p0}
+/*orgz*/movx, m
+		mths, revx				// s= {0000,p8,p4,p2,p1}
+		movm, c
+		movn, d					// {n,m}= data
+		movx, x					// x= 8'b00000000 (jump condition)
+		vall, 4'b0000			// v= 8'b????0000
+/*ifp0*/jizr, sr, 3'b011
+			valh, 4'b0100		// if p=1, 1 error
+			flip, s				// correct {n,m} by r[3:0]
+			mthr, revx
+			jizr, sr, 3'b100
+			func, noop
+/*elif*/jizr, ss, 3'b010
+			valh, 4'b1100		// if p=0 && (p1:8!=0) 2 errors
+			mthr, revx
+			jizr, sr, 3'b001
+/*othr*/valh, 4'b0000			// if p=0 && p1:8=0
+		movk, v
+		movk, v					// k= {F1,F0,00_0000}
+		movc, m
+		movd, n					// {d,c} = corrected data
+/*deco*/vall, 4'b1000
+		valh, 4'b1110
+		movx, v
+		movy, c					// {1110_1000} & {b4, b3, b2, p4, b1, p2, p1, p0}
+		mthr, amp				// r= {b4,b3 b2,0,b1,000}
+		movm, r					// r => m
+		movn, n
+		lsrc, sm, 3'b011		// m= {000,b4,b3,b2,0,b1}
+		lsrc, sn, 3'b001		// n= {b1,000_0000}
+		lsrc, sm, 3'b010		// m= {00000,b4,b3,b2}
+		lslc, sm, 3'b101		// m= {b4,b3,b2,b1,0000}
+		movx, d
+		vall, 4'b0001
+		valh, 4'b0000
+		movy, v					// {b11,b10,b9,b8,b7,b6,b5,p8} ror {00000001}
+		mthr, ror				// r= {p8,b11,b10,b9,b8,b7,b6,b5}
+		movn, r					// r => n
+		lsrc, sm, 3'b100		// m= {b8,b7,b6,b5,b4,b3,b2,b1}
+		movc, m					// m => c
+		movm, m					// m= 00000000
+		lslc, sn, 3'b001		// n = {b11,b10,b9,b8,b7,b6,b5,0}
+		lsrc, sn, 3'b101		// n = {0000_0,b11,b10,b9}
+		movx, n
+		movy, k
+		mthr, lor				// r= {F1,F0,00_0,b11,b10,b9}
+		movd, r					// r => d
+/*stor*/decr, a
+		stor, sa, d[2:0]
+		decr, a
+		stor, sa, c[2:0]
+/*comp*/bnzr, a
+		func, done
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+		func, noop
+/*sub0*/movx, v			//subroutine: calc parity using mask in v, store in r 
+		movy, c
+		mthr, amp				// mask c
+		movy, d
+		mths, amp				// mask d
+		movx, r
+		movy, s
+		mthr, parx				// calculate byte parity
+		mths, pary
+		movx, r
+		movy, s
+		mthr, eor				// r= parity {d,c}-mask
+		func, rfsr

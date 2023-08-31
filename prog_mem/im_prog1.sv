@@ -121,9 +121,9 @@ initial begin
 		core[q] = {mthr, eor}; q++;					// calculate total parity
 		core[q] = {func, rfsr}; q++;
 
-		fi = $fopen("p1mc.txt","w");
+		fi = $fopen("prog1_machine.txt","w");
 
-		for (int i = 0; i <= q; i++) begin
+		for (int i = 0; i < q; i++) begin
 			$fdisplay(fi,"%b",core[i]);
 		end
 

@@ -74,9 +74,9 @@ always_comb begin
 	3: begin						// math & logic
 		case (instr[6:5])
 			
-		0: begin					// seth & jtsr
+		0: begin					// jtsr
 			if (!instr[4]) reg_op = j2sr;
-			else reg_op = sethEn;
+			else noop = 1;			// unused instruction, available for expansion
 		end
 
 		1: begin					// alu math

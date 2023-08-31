@@ -201,26 +201,6 @@ always_ff @(posedge clk) begin
 				regl: rl <= res;
 			endcase
 			end
-		sethEn: begin
-			case (instr_o)
-				4'h0: rm[0] <= 1'b1;
-				4'h1: rm[1] <= 1'b1;
-				4'h2: rm[2] <= 1'b1;
-				4'h3: rm[3] <= 1'b1;
-				4'h4: rm[4] <= 1'b1;
-				4'h5: rm[5] <= 1'b1;
-				4'h6: rm[6] <= 1'b1;
-				4'h7: rm[7] <= 1'b1;
-				4'h8: rn[0] <= 1'b1;
-				4'h9: rn[1] <= 1'b1;
-				4'ha: rn[2] <= 1'b1;
-				4'hb: rn[3] <= 1'b1;
-				4'hc: rn[4] <= 1'b1;
-				4'hd: rn[5] <= 1'b1;
-				4'he: rn[6] <= 1'b1;
-				4'hf: rn[7] <= 1'b1;
-			endcase
-			end
 		lslcEn: begin
 			case (instr_o)
 				4'b0000: rm <= rn;
