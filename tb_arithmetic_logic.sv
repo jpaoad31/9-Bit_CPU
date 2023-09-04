@@ -100,20 +100,6 @@ always begin
 
 	#10ns
 
-	// rotate x left
-	math_op = ROL;
-	x = 8'b00111111;
-	y = 8'b00000011;
-	r_ex = 8'b11111001;
-
-	#10ns
-
-	x = 8'b10101111;
-	y = 8'b00000100;
-	r_ex = 8'b11111010;
-
-	#10ns
-
 	// rotate x right
 	math_op = ROR;
 	x = 8'b00111111;

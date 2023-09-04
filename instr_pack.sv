@@ -9,7 +9,7 @@ package instr_pack;
 	} register;
 
 	typedef enum logic[3:0] {
-		AMP, LOR, FLP, EOR, RSC, LSC, ROL, ROR,
+		AMP, LOR, FLP, EOR, RSC, LSC, UNUSED, ROR,
 		ADD, SUB, EQL8,EQL5,REVx,REVy,PARx,PARy,
 		no_mth = 4'bz
 	} math;
