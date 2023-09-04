@@ -172,12 +172,14 @@ end
 				core[q] = {valh, 4'b0100}; q++;			// if p=1, 1 error
 				core[q] = {flip, s}; q++;				// correct {n,m} by r[3:0]
 				core[q] = {mthr, revx}; q++;
-				core[q] = {jizr, sr, 3'b100}; q++;
+				core[q] = {jizr, sr, 3'b101}; q++;
 				core[q] = {func, noop}; q++;
-	/*elif*/core[q] = {jizr, ss, 3'b010}; q++;
-				core[q] = {valh, 4'b1100}; q++;			// if p=0 && (p1:8!=0) 2 errors
-				core[q] = {mthr, revx}; q++;
-				core[q] = {jizr, sr, 3'b001}; q++;
+	/*elif*/core[q] = {jizr, ss, 3'b011}; q++;
+				core[q] = {valh, 4'b1111}; q++;			// if p=0 && (p1:8!=0) 2 errors
+				core[q] = {movk, v}; q++;
+				core[q] = {vall, 4'b0011}; q++;
+				core[q] = {valh, 4'b0101}; q++;
+				core[q] = {func, lj0}; q++;				// skip decoding
 	/*othr*/core[q] = {valh, 4'b0000}; q++;				// if p=0 && p1:8=0
 			core[q] = {movk, v}; q++;
 			core[q] = {movk, v}; q++;					// k= {F1,F0,00_0000}
@@ -215,8 +217,6 @@ end
 			core[q] = {stor, sa, c[2:0]}; q++;
 	/*comp*/core[q] = {bnzr, a}; q++;
 			core[q] = {func, done}; q++;
-			core[q] = {func, noop}; q++;
-			core[q] = {func, noop}; q++;
 			core[q] = {func, noop}; q++;
 			core[q] = {func, noop}; q++;
 			core[q] = {func, noop}; q++;

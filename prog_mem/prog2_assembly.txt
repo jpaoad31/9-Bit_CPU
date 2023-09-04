@@ -45,12 +45,14 @@
 			valh, 4'b0100		// if p=1, 1 error
 			flip, s				// correct {n,m} by r[3:0]
 			mthr, revx
-			jizr, sr, 3'b100
-			func, noop
-/*elif*/jizr, ss, 3'b010
-			valh, 4'b1100		// if p=0 && (p1:8!=0) 2 errors
-			mthr, revx
-			jizr, sr, 3'b001
+			core[q] = {jizr, sr, 3'b101}; q++;
+			core[q] = {func, noop}; q++;
+/*elif*/core[q] = {jizr, ss, 3'b011}; q++;
+			core[q] = {valh, 4'b1111}; q++;			// if p=0 && (p1:8!=0) 2 errors
+			core[q] = {movk, v}; q++;
+			core[q] = {vall, 4'b0011}; q++;
+			core[q] = {valh, 4'b0101}; q++;
+			core[q] = {func, lj0}; q++;				// skip decoding
 /*othr*/valh, 4'b0000			// if p=0 && p1:8=0
 		movk, v
 		movk, v					// k= {F1,F0,00_0000}
@@ -88,9 +90,6 @@
 		stor, sa, c[2:0]
 /*comp*/bnzr, a
 		func, done
-		func, noop
-		func, noop
-		func, noop
 		func, noop
 		func, noop
 		func, noop

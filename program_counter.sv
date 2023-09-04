@@ -1,7 +1,7 @@
 module program_counter(
 input	clk, start, bizr, bnzr, jizr, jnzr, jump2sub, retFsub,
 		branch, lj0, lj1, lj2, lj3,
-input [7:0] rz,
+input [7:0] rz, rv,
 input [9:0] start_address, subroutine, rl, res,
 output logic [9:0] rp=10'b0000000000,
 output wire [9:0] npc
@@ -27,19 +27,19 @@ always_ff @(posedge clk) begin
 		end
 
 		else if (lj0) begin
-				rp <= {2'b00, rz};
+				rp <= {2'b00, rv};
 		end
 
 		else if (lj1) begin
-				rp <= {2'b01, rz};
+				rp <= {2'b01, rv};
 		end
 
 		else if (lj2) begin
-				rp <= {2'b10, rz};
+				rp <= {2'b10, rv};
 		end
 
 		else if (lj3) begin
-				rp <= {2'b11, rz};
+				rp <= {2'b11, rv};
 		end
 
 		else	rp <= npc;
