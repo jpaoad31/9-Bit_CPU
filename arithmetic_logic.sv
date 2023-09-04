@@ -40,18 +40,7 @@ always_comb begin
 			// shift & rotate
 			RSC: res = {y[0], x[7:1]};		// right shift x w/ carry
 			LSC: res = {x[6:0], y[7]};		// left shift x w/ carry
-			ROL: begin						// rotate x left by y[2:0]
-				case (y[2:0])
-				0: res = x;
-				1: res = {x[6:0],x[7]};
-				2: res = {x[5:0],x[7:6]};
-				3: res = {x[4:0],x[7:5]};
-				4: res = {x[3:0],x[7:4]};
-				5: res = {x[2:0],x[7:3]};
-				6: res = {x[1:0],x[7:2]};
-				7: res = {x[0],  x[7:1]};
-				endcase
-			end
+			/* ROL: */						// unused rotate left instruction, can be repurposed
 			ROR: begin						// rotate x right by y[2:0]
 				case (y[2:0])				// yes I know this is a very redundant
 				0: res = x;					// it is included for compatibility
