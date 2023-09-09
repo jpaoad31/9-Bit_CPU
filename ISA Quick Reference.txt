@@ -67,7 +67,7 @@ fun function parameters
 	01 00	noop
 	01 01	
 	01 10	
-	01 11							// lots of unused functions
+	01 11							// 7 unused functions
 
 	10 00	
 	10 01	
@@ -95,9 +95,9 @@ reg Register Values
 	1010	i	4'ha
 	1011	j	4'hb
 	1100	k	4'hc
-	1101	l	4'hd				// literal
+	1101	v	4'hd				// value
 	1110	z	4'he				// branch
-	1111	p	4'hf				// program_counter
+	1111	l	4'hf				// link
 
 opp Math Operations (one/two inputs -> one output (r or s))
 	0000	amp		x&y
@@ -122,6 +122,7 @@ opp Math Operations (one/two inputs -> one output (r or s))
 Hardware Encode/Decode
 // not implemented because they are too powerful
 // and will rip the fabric of space and time.
+// (i.e. they are not permitted by the assignment restrictions)
 	
 	1000	prc0	^(b11:1,p8,p4,p2,p1) 
 	1001	prc1	^(b11,b9,b7,b5,b4,b2,b1) 
